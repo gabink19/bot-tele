@@ -40,26 +40,26 @@ class TelegramController extends Controller
             if($is_send) {
                 if(isset(Command::ListCommands()[$message]) && (Command::ListCommands()[$message]['type'] == 'image')) {
                     $data['photo'] = $response;
-                    //Util::sendPhoto($data);
+                    Util::sendPhoto($data);
                 }
                 else {
                     $data['text'] = $response;
-                    //Util::sendMessage($data);
+                    Util::sendMessage($data);
                 }
             }
             
-            return response()->json([
+            echo response()->json([
                 'status' => 'ok',
                 'data' => $data,
                 'message' => 'Send success'
             ], 200);
         }
         
-        return response()->json([
+        echo response([
             'status' => 'ok',
             'data' => null,
             'message' => 'Nothing to send'
-        ]);
+        ], 200);
     }
 
     public function index()
