@@ -12,9 +12,9 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
-            // $fh = fopen("request.txt", "a");
-            // fwrite($fh, json_encode($updates).",\r\n");
-            // fclose($fh);
+            $fh = fopen("request.txt", "a");
+            fwrite($fh, json_encode($updates).",\r\n");
+            fclose($fh);
             $command = "";
             if(!isset($updates["message"]["text"]))
                 $is_send = false;
@@ -51,13 +51,21 @@ class TelegramController extends Controller
                     $data['text'] = $response;
                     Util::sendMessage($data);
                 }
+                echo response()->json([
+                    'status' => 'ok',
+                    'data' => $data,
+                    'message' => 'Send success'
+                ], 200);
+            }
+            else {
+                echo response()->json([
+                    'status' => 'ok',
+                    'data' => null,
+                    'message' => 'Nothing to send'
+                ], 200);
             }
             
-            echo response()->json([
-                'status' => 'ok',
-                'data' => $data,
-                'message' => 'Send success'
-            ], 200);
+            
         }
     }
 

@@ -147,14 +147,14 @@ class Command
 
     public static function mauPulang()
     {
-        if(self::getWaktu()['now']->format("Y-m-d H:i:s") < self::getWaktu()['masuk']) 
+        if(self::getWaktu()['now'] < self::getWaktu()['masuk']) 
             return 'Belum masuk cuy, rajin amat dah';
-        else if(self::getWaktu()['now']->format("Y-m-d H:i:s") > self::getWaktu()['pulang'])
+        else if(self::getWaktu()['now'] > self::getWaktu()['pulang'])
             return 'Udah pulang cuy, emang mau OT?';
         else if(self::getWaktu()['now']->isWeekend())
             return 'Weekend cuy, gak ada pulang kerja';
         else {
-            $waktu = (int) (strtotime(self::getWaktu()['pulang']->format('Y-m-d H:i:s')) - time());
+            $waktu = (int) (strtotime(self::getWaktu()['pulang']) - time());
             $jam = floor($waktu / 3600);
             $menit = floor(($waktu % 3600) / 60);
             $detik = $waktu % 60;
