@@ -19,5 +19,4 @@ Route::get('/', function () {
 });
 
 
-Route::post('/telegram', [TelegramController::class, 'index']);
-Route::get('/test', [TelegramController::class, 'test']);
+Route::post('/telegram', [TelegramController::class, 'index'])->middleware('cors');

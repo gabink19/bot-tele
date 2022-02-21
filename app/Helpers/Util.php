@@ -16,7 +16,7 @@ class Util
     public static function sendMessage($data)
     {
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage"
-            . "?chat_id=" . $data['chat_id']
+            . "?chat_id=" . env('TELEGRAM_CHAT_ID')
             . "&text=" . urlencode($data['text']);
         file_get_contents($url);
     }
@@ -24,7 +24,7 @@ class Util
     public static function sendPhoto($data)
     {
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendPhoto"
-            . "?chat_id=" . $data['chat_id']
+            . "?chat_id=" . env('TELEGRAM_CHAT_ID')
             . "&photo=" . urlencode($data['photo']);
         file_get_contents($url);
     }

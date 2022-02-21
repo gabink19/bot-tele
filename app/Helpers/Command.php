@@ -59,6 +59,11 @@ class Command
                 'type' => 'image',
                 'action' => self::mauDog()
             ],
+            '/mauGabut' => [
+                'deskripsi' => 'Cek kuyyy',
+                'type' => 'text',
+                'action' => self::mauGabut()
+            ],
         ];
     }
 
@@ -107,6 +112,11 @@ class Command
         return 'https://i0.wp.com/warindo.de/wp-content/uploads/2021/01/Bir-Bintang-330ml.jpg';
     }
 
+    public static function mauGabut() 
+    {
+        return 'https://5.182.209.164/category/box-office';
+    }
+
     public static function mauCrypto() 
     {
         $list_crypto = [
@@ -131,7 +141,7 @@ class Command
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'https://dekontaminasi.com/api/id/covid19/stats');
         $data = json_decode($response->getBody()->getContents(), true);
-        $response = "Data Covid-19 di Indonesia :\n\n";
+        $response = "Data Covid-19 di Indonesia (".date("d-m-Y").") :\n\n";
         $response .= "Positif : ".Util::format_number($data['numbers']['infected'])."\n";
         $response .= "Sembuh : ".Util::format_number($data['numbers']['recovered'])."\n";
         $response .= "Dalam Perawatan : ".Util::format_number($data['numbers']['infected']-$data['numbers']['recovered']-$data['numbers']['fatal'])."\n";
