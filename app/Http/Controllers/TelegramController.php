@@ -12,9 +12,10 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
-            $fh = fopen("request.txt", "a");
-            fwrite($fh, json_encode($updates).",\r\n");
-            fclose($fh);
+            // $fh = fopen("request.txt", "a");
+            // fwrite($fh, json_encode($updates).",\r\n");
+            // fclose($fh);
+            $command = "";
             if(!isset($updates["message"]["text"]))
                 $is_send = false;
             else {
@@ -28,17 +29,21 @@ class TelegramController extends Controller
                     $is_send = true;
                 }
                 else {
+                    $i = 0;
                     foreach(Command::ListCommands() as $key => $value) {
                         if (strpos(strtolower($message), strtolower($key)) !== false) {
-                            $response = $value['action'];
+                            $response = Command::ListActions()[$i];
+                            $command = $key;
                             $is_send = true;
+                            break;
                         }
+                        $i++;
                     }
                 }
             }
 
             if($is_send) {
-                if(isset(Command::ListCommands()[$message]) && (Command::ListCommands()[$message]['type'] == 'image')) {
+                if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
                     $data['photo'] = $response;
                     Util::sendPhoto($data);
                 }
@@ -54,12 +59,6 @@ class TelegramController extends Controller
                 'message' => 'Send success'
             ], 200);
         }
-        
-        echo response([
-            'status' => 'ok',
-            'data' => null,
-            'message' => 'Nothing to send'
-        ], 200);
     }
 
     public function index()

@@ -11,58 +11,53 @@ class Command
 
     }
 
+    public static function ListActions()
+    {
+        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauGabut()];
+    }
+
     public static function ListCommands()
     {
         return [
             '/mauPulang' => [
                 'deskripsi' => 'Cek waktu pulang kerja',
-                'type' => 'text',
-                'action' => self::mauPulang()
+                'type' => 'text'
             ],
             '/mauGajian' => [
                 'deskripsi' => 'Cek waktu gajian',
-                'type' => 'text',
-                'action' => self::mauGajian()
+                'type' => 'text'
             ],
             '/mauLibur' => [
                 'deskripsi' => 'Cek waktu libur bulan ini',
-                'type' => 'text',
-                'action' => self::mauLibur()
+                'type' => 'text'
             ],
             '/mauOT' => [
                 'deskripsi' => 'Untuk keperluan overtime',
-                'type' => 'image',
-                'action' => self::mauOT()
+                'type' => 'image'
             ],
             '/mauCrypto' => [
                 'deskripsi' => 'Untuk melihat harga crypto',
-                'type' => 'text',
-                'action' => self::mauCrypto()
+                'type' => 'text'
             ],
             '/mauCovid' => [
                 'deskripsi' => 'Untuk melihat statistik covid-19 di Indonesia',
-                'type' => 'text',
-                'action' => self::mauCovid()
+                'type' => 'text'
             ],
             '/mauLiburan' => [
                 'deskripsi' => 'Untuk melihat info liburan',
-                'type' => 'image',
-                'action' => self::mauLiburan()
+                'type' => 'image'
             ],
             '/mauCat' => [
                 'deskripsi' => 'Untuk melihat gambar kucing',
-                'type' => 'image',
-                'action' => self::mauCat()
+                'type' => 'image'
             ],
             '/mauDog' => [
                 'deskripsi' => 'Untuk melihat gambar anjing',
-                'type' => 'image',
-                'action' => self::mauDog()
+                'type' => 'image'
             ],
             '/mauGabut' => [
                 'deskripsi' => 'Cek kuyyy',
-                'type' => 'text',
-                'action' => self::mauGabut()
+                'type' => 'text'
             ],
         ];
     }
