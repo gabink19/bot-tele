@@ -20,7 +20,7 @@ class TelegramController extends Controller
                 $is_send = false;
             else {
                 $message = $updates["message"]["text"];
-                $reply_to_message_id = $updates["message"]["chat"]["id"];
+                $reply_to_message_id = $updates["message"]["message_id"];
                 $response = "";
                 if ($message == "/start") {
                     $response = "Hello! I'm a bot. I'm here to help you to gabut maksimal.\n\n";
