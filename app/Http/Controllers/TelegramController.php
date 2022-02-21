@@ -20,6 +20,7 @@ class TelegramController extends Controller
                 $is_send = false;
             else {
                 $message = $updates["message"]["text"];
+                $reply_to_message_id = $updates["message"]["chat"]["id"];
                 $response = "";
                 if ($message == "/start") {
                     $response = "Hello! I'm a bot. I'm here to help you to gabut maksimal.\n\n";
@@ -43,6 +44,7 @@ class TelegramController extends Controller
             }
 
             if($is_send) {
+                $data['reply_to_message_id'] = $reply_to_message_id;
                 if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
                     $data['photo'] = $response;
                     Util::sendPhoto($data);
