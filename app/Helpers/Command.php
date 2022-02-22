@@ -123,7 +123,7 @@ class Command
         ];
         $data = Util::getHargaCrypto();
         $data = json_decode($data, true);
-        $response = "Informasi Crypto :\n\n";
+        $response = "Informasi Crypto hari ini :\n\n";
         foreach($data['payload'] as $key => $value) {
             if (array_key_exists($value['pair'], $list_crypto))
                 $response .= $list_crypto[$value['pair']]." : Rp. ". Util::format_number($value['latestPrice'])." (".Util::checkPositifNumber($value['day'])."%)\n";
@@ -210,9 +210,11 @@ class Command
         }
 
         if(count($output) == 0)
-            $response = "Tidak ada libur bulan ini, sad";
-        else
-            $response = implode("\n", $output);
+            $response = "Ga ada libur bulan ini cuy, fix sad";
+        else {
+            $response = "Informasi libur bulan ini :\n\n";
+            $response .= implode("\n", $output);
+        }
 
         return $response;
     }
