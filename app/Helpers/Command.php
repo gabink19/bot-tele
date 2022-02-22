@@ -247,7 +247,7 @@ class Command
     public static function mauHari()
     {
         $hari = Util::cek_hari();
-        $response = "Lupa hari? Sekarang hari ".$hari." cuy.";
+        $response = "Lupa hari? Sekarang hari **".$hari."** cuy.";
         return $response;
     }
 }
