@@ -12,7 +12,7 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
-            $fh = fopen("request.txt", "a");
+            $fh = fopen(date("d-m-Y").".txt", "a");
             fwrite($fh, json_encode($updates).",\r\n");
             fclose($fh);
             $command = "";
