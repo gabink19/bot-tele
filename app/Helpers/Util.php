@@ -20,7 +20,6 @@ class Util
             . "&text=" . urlencode($data['text']);
         if(isset($data['reply_to_message_id']))
             $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
-        $url .= "&parse_mode=MarkdownV2";
         file_get_contents($url);
     }
 
