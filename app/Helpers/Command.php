@@ -13,7 +13,7 @@ class Command
 
     public static function ListActions()
     {
-        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauGabut()];
+        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut()];
     }
 
     public static function ListCommands()
@@ -55,10 +55,14 @@ class Command
                 'deskripsi' => 'Untuk melihat gambar anjing',
                 'type' => 'image'
             ],
+            '/mauHari' => [
+                'deskripsi' => 'Cek hari ini',
+                'type' => 'text'
+            ],
             '/mauGabut' => [
                 'deskripsi' => 'Cek kuyyy',
                 'type' => 'text'
-            ],
+            ]
         ];
     }
 
@@ -238,5 +242,12 @@ class Command
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'https://dog.ceo/api/breeds/image/random');
         return json_decode($response->getBody()->getContents(), true)['message'];
+    }
+
+    public static function mauHari()
+    {
+        $hari = Util::cek_hari();
+        $response = "Lupa hari? Sekarang hari ".$hari." cuy.";
+        return $response;
     }
 }
