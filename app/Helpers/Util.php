@@ -17,8 +17,9 @@ class Util
     {
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage"
             . "?chat_id=" . env('TELEGRAM_CHAT_ID')
-            . "&text=" . urlencode($data['text'])
-            . "&reply_to_message_id=" .$data['reply_to_message_id'];
+            . "&text=" . urlencode($data['text']);
+        if(isset($data['reply_to_message_id']))
+            $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
         file_get_contents($url);
     }
 
@@ -26,8 +27,9 @@ class Util
     {
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendPhoto"
             . "?chat_id=" . env('TELEGRAM_CHAT_ID')
-            . "&photo=" . urlencode($data['photo'])
-            . "&reply_to_message_id=" .$data['reply_to_message_id'];
+            . "&photo=" . urlencode($data['photo']);
+            if(isset($data['reply_to_message_id']))
+                $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
         file_get_contents($url);
     }
 
