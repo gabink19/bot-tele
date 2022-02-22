@@ -106,9 +106,14 @@ class Command
 
     public static function mauOT() 
     {
-        // return 'https://picsum.photos/200/300?random='.rand(1,1000).'.jpg';
-        // return 'https://random.imagecdn.app/500/150';
-        return 'https://i0.wp.com/warindo.de/wp-content/uploads/2021/01/Bir-Bintang-330ml.jpg';
+        $data = [
+            "https://i.pinimg.com/564x/11/d9/b1/11d9b1f13b48c998015442030661b34d.jpg",
+            "https://s1.bukalapak.com/img/670387178/large/Anggur_Orang_Tua___Anggur_merah__Kolesom__Arak_Obat__Intisar.png",
+            "https://filebroker-cdn.lazada.co.id/kf/S148318cdb34b4cd696ff9c7ffc854656M.jpg",
+            "https://pbs.twimg.com/media/EXKosS7UMAAvDQQ.jpg",
+            "https://i0.wp.com/warindo.de/wp-content/uploads/2021/01/Bir-Bintang-330ml.jpg"
+        ];
+        return $data[rand(0, count($data)-1)];
     }
 
     public static function mauGabut() 
