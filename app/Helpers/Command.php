@@ -11,9 +11,9 @@ class Command
 
     }
 
-    public static function ListActions()
+    public static function ListActions($data = null)
     {
-        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut()];
+        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut(), self::mauClockIn($data), self::mauClockOut($data), self::mauCekAbsen()];
     }
 
     public static function ListCommands()
@@ -62,6 +62,18 @@ class Command
             '/mauGabut' => [
                 'deskripsi' => 'Cek kuyyy',
                 'type' => 'text'
+            ],
+            '/mauClockIn' => [
+                'deskripsi' => 'Absen masuk kuy',
+                'type' => 'text'
+            ],
+            '/mauClockOut' => [
+                'deskripsi' => 'Absen pulang kuy',
+                'type' => 'text'
+            ],
+            '/mauCekAbsen' => [
+                'deskripsi' => 'Cek Absen kuy',
+                'type' => 'text'
             ]
         ];
     }
@@ -69,9 +81,11 @@ class Command
     public static function getWaktu()
     {
         return [
-            'now'       => Carbon::parse(date("Y-m-d H:i:s")),
-            'masuk'     => Carbon::parse('09:00:00'),
-            'pulang'    => Carbon::parse('18:00:00')
+            'now'           => Carbon::parse(date("Y-m-d H:i:s")),
+            'masuk'         => Carbon::parse('09:00:00'),
+            'batas_masuk'   => Carbon::parse('10:00:00'),
+            'pulang'        => Carbon::parse('18:00:00'),
+            'batas_pulang'  => Carbon::parse('23:59:59')
         ];
     }
 
@@ -254,5 +268,131 @@ class Command
         $hari = Util::cek_hari();
         $response = "Lupa hari? Sekarang hari ".$hari." cuy";
         return $response;
+    }
+
+    public static function mauClockIn($sender)
+    {
+        if(self::getWaktu()['now']->isWeekend())
+            return "Weekend dulu cuy, absen nya libur dulu";
+        else if(self::getWaktu()['now'] < self::getWaktu()['masuk']) 
+            return "Belum masuk cuy, belom bisa absen masuk. rajin amat dah";
+        else if(self::getWaktu()['now'] > self::getWaktu()['batas_masuk']) 
+            return "Udah kelewat absen masuknya cuy, kalau belum absen siap siap potong gaji dah";
+        else {
+            $file = "Logs/Masuk-".date("d-m-Y").".txt";
+
+            if (!file_exists("Logs"))
+                mkdir("Logs", 0775, true);
+
+            if (!file_exists($file))
+                $fh = fopen($file, 'w') or die("Can't create file");
+                
+            $fh = fopen($file, 'r');
+            $cek_absen = false;
+            while ($line = fgets($fh)) {
+                if($line == "@".$sender['username']."\r\n") {
+                    $cek_absen = true;
+                    break;
+                }
+            }
+            fclose($fh);
+            
+            $orang = "";
+            if(!$cek_absen) {
+                $orang .= "Thankyou @".$sender['username']."\r\n";
+                $fh = fopen($file, "a");
+                fwrite($fh, "@".$sender['username']."\r\n");
+                fclose($fh);
+            }
+            else
+                $orang .= "Lu @".$sender['username']." kan udah absen masuk hari ini\r\n";
+
+            $orang .= "List yang udah absen masuk hari ini :\n\n";
+            $fh = fopen($file, 'r');
+            while ($line = fgets($fh)) {
+                $orang .= $line;
+            }
+            fclose($fh);
+            return $orang;
+        }
+    }
+
+    public static function mauClockOut($sender)
+    {
+        if(self::getWaktu()['now']->isWeekend())
+            return "Weekend dulu cuy, absen nya libur dulu";
+        else if(self::getWaktu()['now'] < self::getWaktu()['pulang']) 
+            return "Belum waktunya pulang cuy, belom bisa absen pulang. sabar dulu";
+        else if(self::getWaktu()['now'] > self::getWaktu()['batas_pulang']) 
+            return "Udah kelewat absen pulangnya cuy, siap siap potong gaji dah";
+        else {
+            $file = "Logs/Pulang-".date("d-m-Y").".txt";
+
+            if (!file_exists("Logs"))
+                mkdir("Logs", 0775, true);
+
+            if (!file_exists($file))
+                $fh = fopen($file, 'w') or die("Can't create file");
+                
+            $fh = fopen($file, 'r');
+            $cek_absen = false;
+            while ($line = fgets($fh)) {
+                if($line == "@".$sender['username']."\r\n") {
+                    $cek_absen = true;
+                    break;
+                }
+            }
+            fclose($fh);
+            
+            $orang = "";
+            if(!$cek_absen) {
+                $orang .= "Thankyou @".$sender['username']."\r\n";
+                $fh = fopen($file, "a");
+                fwrite($fh, "@".$sender['username']."\r\n");
+                fclose($fh);
+            }
+            else
+                $orang .= "Lu @".$sender['username']." kan udah absen pulang hari ini\r\n";
+
+            $orang .= "List yang udah absen pulang hari ini :\n\n";
+            $fh = fopen($file, 'r');
+            while ($line = fgets($fh)) {
+                $orang .= $line;
+            }
+            fclose($fh);
+            return $orang;
+        }
+    }
+
+    public static function mauCekAbsen()
+    {
+        if(self::getWaktu()['now']->isWeekend())
+            return "Weekend dulu cuy, absen nya libur dulu";
+        else {
+            $file_masuk = "Logs/Masuk-".date("d-m-Y").".txt";
+            $file_pulang = "Logs/Pulang-".date("d-m-Y").".txt";
+
+            if (!file_exists("Logs"))
+                mkdir("Logs", 0775, true);
+
+            $orang = "List yang udah absen masuk hari ini (".date("d-m-Y")."):\n\n";
+            if (file_exists($file_masuk)) {
+                $fh = fopen($file_masuk, 'r');
+                while ($line = fgets($fh)) {
+                    $orang .= $line;
+                }
+                fclose($fh);
+            }
+
+            $orang .= "\nList yang udah absen pulang hari ini (".date("d-m-Y")."):\n\n";
+            if (file_exists($file_pulang)) {
+                $fh = fopen($file_pulang, 'r');
+                while ($line = fgets($fh)) {
+                    $orang .= $line;
+                }
+                fclose($fh);
+            }
+            return $orang;
+        }
     }
 }

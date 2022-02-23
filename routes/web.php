@@ -19,4 +19,5 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'v2'], function () use ($router) {
     $router->post('/telegram', 'TelegramController@index');
+    $router->post('/test', 'TelegramController@test');
 });

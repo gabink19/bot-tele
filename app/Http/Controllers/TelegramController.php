@@ -12,7 +12,10 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
-            $fh = fopen(date("d-m-Y").".txt", "a");
+            if (!file_exists("Logs"))
+                mkdir("Logs", 0775, true);
+
+            $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "a");
             fwrite($fh, json_encode($updates).",\r\n");
             fclose($fh);
             $command = "";
@@ -21,6 +24,7 @@ class TelegramController extends Controller
             else {
                 $message = $updates["message"]["text"];
                 $reply_to_message_id = $updates["message"]["message_id"];
+                $sender = $updates["message"]["from"];
                 $response = "";
                 if ($message == "/start") {
                     $response = "Hello! I'm a bot. I'm here to help you to gabut maksimal.\n\n";
@@ -33,7 +37,7 @@ class TelegramController extends Controller
                     $i = 0;
                     foreach(Command::ListCommands() as $key => $value) {
                         if (strtolower($message) == strtolower($key) || strtolower($message) == strtolower($key)."@".env('TELEGRAM_BOT_NAME')) {
-                            $response = Command::ListActions()[$i];
+                            $response = Command::ListActions($sender)[$i];
                             $command = $key;
                             $is_send = true;
                             break;
@@ -74,5 +78,16 @@ class TelegramController extends Controller
     public function index()
     {
         $this->telegramWebhook();
+    }
+
+    public function test()
+    {
+        Command::mauClockOut([
+            "id" => 396647467,
+            "is_bot" => false,
+            "first_name" => "Septiadi",
+            "username" => "septiadirahmawan",
+            "language_code" => "en"
+        ]);
     }
 }
