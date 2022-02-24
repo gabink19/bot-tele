@@ -11,9 +11,60 @@ class Command
 
     }
 
-    public static function ListActions($data = null)
+    public static function ListActions($data = null, $i)
     {
-        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut(), self::mauCuaca(), self::mauCekGempa(), self::mauClockIn($data), self::mauClockOut($data), self::mauCekAbsen()];
+        switch($i) {
+            case "0" : 
+                return self::mauPulang();
+                break;
+            case "1" : 
+                return self::mauGajian();
+                break;
+            case "2" : 
+                return self::mauLibur();
+                break;
+            case "3" : 
+                return self::mauOT();
+                break;
+            case "4" : 
+                return self::mauCrypto();
+                break;
+            case "5" : 
+                return self::mauCovid();
+                break;
+            case "6" : 
+                return self::mauLiburan();
+                break;
+            case "7" : 
+                return self::mauCat();
+                break;
+            case "8" : 
+                return self::mauDog();
+                break;
+            case "9" : 
+                return self::mauHari();
+                break;
+            case "10" : 
+                return self::mauGabut();
+                break;
+            case "11" : 
+                return self::mauCuaca();
+                break;
+            case "12" : 
+                return self::mauCekGempa();
+                break;
+            case "13" : 
+                return self::mauClockIn($data);
+                break;
+            case "14" : 
+                return self::mauClockOut($data);
+                break;
+            case "15" : 
+                return self::mauCekAbsen();
+                break;
+            default :
+                "nothing";
+            }
     }
 
     public static function ListCommands()
@@ -318,8 +369,8 @@ class Command
         else {
             $file = "Logs/Masuk-".date("d-m-Y").".txt";
 
-            if (!file_exists("Logs"))
-                mkdir("Logs", 0775, true);
+            //if (!file_exists("Logs"))
+            //    mkdir("Logs", 0775, true);
 
             if (!file_exists($file))
                 $fh = fopen($file, 'w') or die("Can't create file");
@@ -365,8 +416,8 @@ class Command
         else {
             $file = "Logs/Pulang-".date("d-m-Y").".txt";
 
-            if (!file_exists("Logs"))
-                mkdir("Logs", 0775, true);
+            //if (!file_exists("Logs"))
+            //    mkdir("Logs", 0775, true);
 
             if (!file_exists($file))
                 $fh = fopen($file, 'w') or die("Can't create file");

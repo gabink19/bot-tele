@@ -37,7 +37,7 @@ class TelegramController extends Controller
                     $i = 0;
                     foreach(Command::ListCommands() as $key => $value) {
                         if (strtolower($message) == strtolower($key) || strtolower($message) == strtolower($key)."@".env('TELEGRAM_BOT_NAME')) {
-                            $response = Command::ListActions($sender)[$i];
+                            $response = Command::ListActions($sender, $i);
                             $command = $key;
                             $is_send = true;
                             break;
@@ -88,6 +88,6 @@ class TelegramController extends Controller
 
     public function test()
     {
-        Command::mauCekGempa();
+        Command::mauCekAbsen();
     }
 }
