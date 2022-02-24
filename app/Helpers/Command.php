@@ -206,7 +206,7 @@ class Command
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', $url);
         $data = $response->getBody()->getContents();
-        $xml = new \SimpleXMLElement($data);
+        $xml = simplexml_load_string($data);
         $array = json_decode(json_encode((array)$xml), TRUE);
         $provinsi = "Banten";
         $kota = "Kota Tangerang";
