@@ -13,7 +13,7 @@ class Command
 
     public static function ListActions($data = null)
     {
-        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut(), self::mauClockIn($data), self::mauClockOut($data), self::mauCekAbsen()];
+        return [self::mauPulang(), self::mauGajian(), self::mauLibur(), self::mauOT(), self::mauCrypto(), self::mauCovid(), self::mauLiburan(), self::mauCat(), self::mauDog(), self::mauHari(), self::mauGabut(), self::mauCuaca(), self::mauCekGempa(), self::mauClockIn($data), self::mauClockOut($data), self::mauCekAbsen()];
     }
 
     public static function ListCommands()
@@ -61,6 +61,14 @@ class Command
             ],
             '/mauGabut' => [
                 'deskripsi' => 'Cek kuyyy',
+                'type' => 'text'
+            ],
+            '/mauCuaca' => [
+                'deskripsi' => 'Cek cuaca hari ini',
+                'type' => 'text'
+            ],
+            '/mauCekGempa' => [
+                'deskripsi' => 'Cek gempa bumi',
                 'type' => 'text'
             ],
             '/mauClockIn' => [
@@ -194,30 +202,59 @@ class Command
 
     public static function mauCuaca()
     {
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.openweathermap.org/data/2.5/weather?q=Tangerang&appid=".env('APIKEY_OPENWEATHER'),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "cache-control: no-cache",
-                "postman-token: ".env('APIKEY_OPENWEATHER')
-            ),
-        ));
+        $url = "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Banten.xml";
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $url);
+        $data = $response->getBody()->getContents();
+        $xml = simplexml_load_string($data);
+        $array = json_decode(json_encode((array)$xml), TRUE);
+        $provinsi = "Banten";
+        $kota = "Kota Tangerang";
+        $isi = [];
+        foreach($array['forecast']['area'] as $value) {
+            if($value['@attributes']['description'] == $kota && $value['@attributes']['domain'] == $provinsi) {
+                foreach($value['parameter'] as $parameters) {
+                    if($parameters['@attributes']['id'] == "weather") {
+                        foreach($parameters['timerange'] as $data) {
+                            if(substr($data['@attributes']['datetime'],0,8) == date("Ymd")) {
+                                $isi[] = "(".$data['@attributes']['h'].":00) ".Util::get_cuaca($data['value']);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $updated_at = $array['forecast']['issue']['year']."-".$array['forecast']['issue']['month']."-".$array['forecast']['issue']['day']." ".$array['forecast']['issue']['hour'].":".$array['forecast']['issue']['minute'].":".$array['forecast']['issue']['second'];
+        $response = "Prakiraan Cuaca Untuk Hari Ini (".date("d-m-Y").")\n";
+        $response .= "Provinsi : ".$provinsi."\n";
+        $response .= "Kota : ".$kota."\n\n";
+        for($i=0; $i<count($isi); $i++) {
+            $response .= $isi[$i]."\n";
+        }
+        $response .= "\n Sumber : BMKG Indonesia";
+        $response .= "\n Updated at : ".$updated_at." WIB";
+        return $response;
+    }
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+    public static function mauCekGempa()
+    {
+        $url = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json";
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $url);
+        $data = json_decode($response->getBody()->getContents(), true);
 
-        curl_close($curl);
+        $image = "https://ews.bmkg.go.id/tews/data/".$data['Infogempa']['gempa']['Shakemap'];
+        $response = "Informasi gempa terkini\n\n";
+        $response .= "Tanggal : ".$data['Infogempa']['gempa']['Tanggal']." ".$data['Infogempa']['gempa']['Jam']."\n";
+        $response .= "Magnitudo : ".$data['Infogempa']['gempa']['Magnitude']."\n";
+        $response .= "Kedalaman : ".$data['Infogempa']['gempa']['Kedalaman']."\n";
+        $response .= "Wilayah : ".$data['Infogempa']['gempa']['Wilayah']."\n";
+        $response .= "Potensi : ".$data['Infogempa']['gempa']['Potensi']."\n";
+        $response .= "Gambar : ".$image."\n";
+        $response .= "\n Sumber : BMKG Indonesia";
 
-        if ($err)
-            echo "cURL Error #:" . $err;
-        else
-            return $response;
+        return $response;
+        return [$response, $image];
     }
 
     public static function mauLibur() 

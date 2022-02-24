@@ -50,7 +50,13 @@ class TelegramController extends Controller
             if($is_send) {
                 $data['reply_to_message_id'] = $reply_to_message_id;
                 if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
-                    $data['photo'] = $response;
+                    // if (strpos(strtolower($message), 'maucekgempa') !== false) {
+                    //     $data['caption'] = $response[0];
+                    //     $data['photo'] = $response[1];
+                    // }
+                    // else
+                        $data['photo'] = $response;
+
                     Util::sendPhoto($data);
                 }
                 else {
@@ -82,12 +88,6 @@ class TelegramController extends Controller
 
     public function test()
     {
-        Command::mauClockOut([
-            "id" => 396647467,
-            "is_bot" => false,
-            "first_name" => "Septiadi",
-            "username" => "septiadirahmawan",
-            "language_code" => "en"
-        ]);
+        Command::mauCekGempa();
     }
 }

@@ -28,6 +28,10 @@ class Util
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendPhoto"
             . "?chat_id=" . env('TELEGRAM_CHAT_ID')
             . "&photo=" . urlencode($data['photo']);
+            if(isset($data['caption']))
+                $url .= "&caption=" . $data['caption'];
+            if(isset($data['parse_mode']))
+                $url .= "&parse_mode=" . $data['parse_mode'];
             if(isset($data['reply_to_message_id']))
                 $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
         file_get_contents($url);
@@ -105,5 +109,29 @@ class Util
             break;
         }
         return $hari_ini;
+    }
+
+    public static function get_cuaca($id) {
+        $data = [
+            "0" => "Cerah / Clear Sky",
+            "1" => "Cerah Berawan / Partly Cloudy",
+            "2" => "Cerah Berawan / Partly Cloudy",
+            "3" => "Berawan / Mostly Cloudy",
+            "4" => "Berawan Tebal / Overcast",
+            "5" => "Udara Kabur / Haze",
+            "10" => "Asap / Smoke",
+            "45" => "Kabut / Fog",
+            "60" => "Hujan Ringan / Light Rain",
+            "61" => "Hujan Sedang / Rain",
+            "63" => "Hujan Lebat / Heavy Rain",
+            "80" => "Hujan Lokal / Isolated Shower",
+            "95" => "Hujan Petir / Severe Thunderstorm",
+            "97" => "Hujan Petir / Severe Thunderstorm"
+        ];
+
+        if(isset($data[$id]))
+            return $data[$id];
+        else
+            return "Tidak di ketahui";
     }
 }
