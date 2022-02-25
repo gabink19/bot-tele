@@ -26,7 +26,7 @@ class TelegramController extends Controller
                 $reply_to_message_id = $updates["message"]["message_id"];
                 $sender = $updates["message"]["from"];
                 $response = "";
-                if ($message == "/start") {
+                if ($message == "/start" || strtolower($message) == "/start@".env('TELEGRAM_BOT_NAME')) {
                     $response = "Hello! I'm a bot. I'm here to help you to gabut maksimal.\n\n";
                     foreach(Command::ListCommands() as $key => $value) {
                         $response .= $key." - ".$value['deskripsi']."\n";

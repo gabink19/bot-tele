@@ -307,10 +307,7 @@ class Command
             $isi[] = "Judul : ".$value['title']."\nTanggal : ".substr($value['pubDate'],0,25)." WIB\nLink : ".$value['link']."\n\n";  
         }
         $response = "Informasi Berita Terkini\n\n";
-        for($i=0; $i<count($isi); $i++) {
-            $response .= $isi[$i]."\n";
-            if($i == 4) break;
-        }
+        $response .= $isi[0]."\n";
         $response .= "Sumber : ".$array['channel']['title'];
         
         return $response;
