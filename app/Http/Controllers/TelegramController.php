@@ -49,7 +49,13 @@ class TelegramController extends Controller
 
             if($is_send) {
                 $data['reply_to_message_id'] = $reply_to_message_id;
-                if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
+                if($response == "Cek rekening BNI cuy") {
+                    $data['caption'] = $response;
+                    $data['animation'] = "https://motionisme.files.wordpress.com/2019/01/tenor-2-1.gif";
+
+                    Util::sendAnimation($data);
+                }
+                else if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
                     // if (strpos(strtolower($message), 'maucekgempa') !== false) {
                     //     $data['caption'] = $response[0];
                     //     $data['photo'] = $response[1];
@@ -88,6 +94,6 @@ class TelegramController extends Controller
 
     public function test()
     {
-        Command::mauCekAbsen();
+        Command::mauBerita();
     }
 }

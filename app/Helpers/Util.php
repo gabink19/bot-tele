@@ -37,6 +37,20 @@ class Util
         file_get_contents($url);
     }
 
+    public static function sendAnimation($data)
+    {
+        $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendAnimation"
+            . "?chat_id=" . env('TELEGRAM_CHAT_ID')
+            . "&animation=" . urlencode($data['animation']);
+            if(isset($data['caption']))
+                $url .= "&caption=" . $data['caption'];
+            if(isset($data['parse_mode']))
+                $url .= "&parse_mode=" . $data['parse_mode'];
+            if(isset($data['reply_to_message_id']))
+                $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
+        file_get_contents($url);
+    }
+
     public static function getHargaCrypto()
     {
         $curl = curl_init();

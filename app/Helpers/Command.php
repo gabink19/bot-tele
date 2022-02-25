@@ -62,6 +62,9 @@ class Command
             case "15" : 
                 return self::mauCekAbsen();
                 break;
+            case "16" : 
+                return self::mauBerita();
+                break;
             default :
                 "nothing";
             }
@@ -131,7 +134,11 @@ class Command
                 'type' => 'text'
             ],
             '/mauCekAbsen' => [
-                'deskripsi' => 'Cek Absen kuy',
+                'deskripsi' => 'Cek absen kuy',
+                'type' => 'text'
+            ],
+            '/mauBerita' => [
+                'deskripsi' => 'Cek berita terkini',
                 'type' => 'text'
             ]
         ];
@@ -268,7 +275,7 @@ class Command
                     if($parameters['@attributes']['id'] == "weather") {
                         foreach($parameters['timerange'] as $data) {
                             if(substr($data['@attributes']['datetime'],0,8) == date("Ymd")) {
-                                $isi[] = "(".$data['@attributes']['h'].":00) ".Util::get_cuaca($data['value']);
+                                $isi[] = "(".substr($data['@attributes']['datetime'],8,2).":".substr($data['@attributes']['datetime'],10,2).") ".Util::get_cuaca($data['value']);
                             }
                         }
                     }
@@ -282,8 +289,30 @@ class Command
         for($i=0; $i<count($isi); $i++) {
             $response .= $isi[$i]."\n";
         }
-        $response .= "\n Sumber : BMKG Indonesia";
-        $response .= "\n Updated at : ".$updated_at." WIB";
+        $response .= "\nSumber : BMKG Indonesia";
+        $response .= "\nUpdated at : ".$updated_at." WIB";
+        return $response;
+    }
+
+    public static function mauBerita()
+    {
+        $url = "https://www.antaranews.com/rss/terkini.xml";
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $url);
+        $data = $response->getBody()->getContents();
+        $xml = \simplexml_load_string($data);
+        $array = json_decode(json_encode((array)$xml), TRUE);
+        $isi = [];
+        foreach($array['channel']['item'] as $value) {
+            $isi[] = "Judul : ".$value['title']."\nTanggal : ".substr($value['pubDate'],0,25)." WIB\nLink : ".$value['link']."\n\n";  
+        }
+        $response = "Informasi Berita Terkini\n\n";
+        for($i=0; $i<count($isi); $i++) {
+            $response .= $isi[$i]."\n";
+            if($i == 4) break;
+        }
+        $response .= "Sumber : ".$array['channel']['title'];
+        
         return $response;
     }
 
