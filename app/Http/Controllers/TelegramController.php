@@ -94,6 +94,6 @@ class TelegramController extends Controller
 
     public function test()
     {
-        Command::mauBerita();
+        Command::mauGajian();
     }
 }

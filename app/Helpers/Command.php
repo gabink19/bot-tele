@@ -65,6 +65,12 @@ class Command
             case "16" : 
                 return self::mauBerita();
                 break;
+            case "17" : 
+                return self::mauTHR();
+                break;
+            case "18" : 
+                return self::mauBonus();
+                break;
             default :
                 "nothing";
             }
@@ -140,6 +146,14 @@ class Command
             '/mauBerita' => [
                 'deskripsi' => 'Cek berita terkini',
                 'type' => 'text'
+            ],
+            '/mauTHR' => [
+                'deskripsi' => 'Cek THR',
+                'type' => 'text'
+            ],
+            '/mauBonus' => [
+                'deskripsi' => 'Cek Bonus',
+                'type' => 'text'
             ]
         ];
     }
@@ -172,12 +186,12 @@ class Command
         $last_work = Carbon::parse($last_work." 23:59:59");
         $sisa_gajian = $last_work->diffInDays(self::getWaktu()['now']);
 
-        if($sisa_gajian == "0")
+        if(self::getWaktu()['now'] > $last_work)
+            $response = "Kan udah gajian bulan ini cuy";
+        else if($sisa_gajian == "0")
             $response = "Cek rekening BNI cuy";
         else if($sisa_gajian == "1")
             $response = "Besok gajian cuy";
-        else if(self::getWaktu()['now'] > $last_work)
-            $response = "Kan udah gajian bulan ini cuy";
         else
             $response = $sisa_gajian . " hari lagi gajiannya cuy";
 
@@ -508,5 +522,15 @@ class Command
             }
             return $orang;
         }
+    }
+
+    public static function mauTHR() 
+    {
+        return 'Kemungkinan sih 2 minggu sebelum idul fitri';
+    }
+
+    public static function mauBonus() 
+    {
+        return 'Biasanya dibarengin sama THR atau nunggu outbound yg gajelas itu';
     }
 }
