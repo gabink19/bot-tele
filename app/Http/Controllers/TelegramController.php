@@ -12,6 +12,7 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
+            
             if (!file_exists("Logs"))
                 mkdir("Logs", 0775, true);
 

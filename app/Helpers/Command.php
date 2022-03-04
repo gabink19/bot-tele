@@ -402,15 +402,14 @@ class Command
     {
         if(self::getWaktu()['now']->isWeekend())
             return "Weekend dulu cuy, absen nya libur dulu";
+        else if(Util::CheckTanggalMerah(self::getWaktu()['now']->format("Ymd")))
+            return "Libur dulu cuy, absen nya libur dulu";
         else if(self::getWaktu()['now'] < self::getWaktu()['masuk']) 
             return "Belum masuk cuy, belom bisa absen masuk. rajin amat dah";
         else if(self::getWaktu()['now'] > self::getWaktu()['batas_masuk']) 
             return "Udah kelewat absen masuknya cuy, kalau belum absen siap siap potong gaji dah";
         else {
             $file = "Logs/Masuk-".date("d-m-Y").".txt";
-
-            //if (!file_exists("Logs"))
-            //    mkdir("Logs", 0775, true);
 
             if (!file_exists($file))
                 $fh = fopen($file, 'w') or die("Can't create file");
@@ -449,15 +448,14 @@ class Command
     {
         if(self::getWaktu()['now']->isWeekend())
             return "Weekend dulu cuy, absen nya libur dulu";
+        else if(Util::CheckTanggalMerah(self::getWaktu()['now']->format("Ymd")))
+            return "Libur dulu cuy, absen nya libur dulu";
         else if(self::getWaktu()['now'] < self::getWaktu()['pulang']) 
             return "Belum waktunya pulang cuy, belom bisa absen pulang. sabar dulu";
         else if(self::getWaktu()['now'] > self::getWaktu()['batas_pulang']) 
             return "Udah kelewat absen pulangnya cuy, siap siap potong gaji dah";
         else {
             $file = "Logs/Pulang-".date("d-m-Y").".txt";
-
-            //if (!file_exists("Logs"))
-            //    mkdir("Logs", 0775, true);
 
             if (!file_exists($file))
                 $fh = fopen($file, 'w') or die("Can't create file");
@@ -496,12 +494,11 @@ class Command
     {
         if(self::getWaktu()['now']->isWeekend())
             return "Weekend dulu cuy, absen nya libur dulu";
+        else if(Util::CheckTanggalMerah(self::getWaktu()['now']->format("Ymd")))
+            return "Libur dulu cuy, absen nya libur dulu";
         else {
             $file_masuk = "Logs/Masuk-".date("d-m-Y").".txt";
             $file_pulang = "Logs/Pulang-".date("d-m-Y").".txt";
-
-            if (!file_exists("Logs"))
-                mkdir("Logs", 0775, true);
 
             $orang = "List yang udah absen masuk hari ini (".date("d-m-Y")."):\n\n";
             if (file_exists($file_masuk)) {
