@@ -212,7 +212,7 @@ class Command
 
     public static function mauGabut() 
     {
-        return 'https://5.182.209.164/category/box-office';
+        return 'https://5.182.209.205/category/box-office';
     }
 
     public static function mauCrypto() 
