@@ -181,7 +181,7 @@ class Command
         $month  = date("Y-m");
         $start  = Carbon::parse($month)->startOfMonth();
         $end    = Carbon::parse($month)->endOfMonth();
-        
+
         if($end->copy()->format('d') == 31)
             $end    = $end->subDays(1);
 
@@ -197,7 +197,7 @@ class Command
         $sisa_gajian = $last_work->diffInDays(self::getWaktu()['now']);
 
         if(self::getWaktu()['now'] > $last_work)
-            $response = "Kan udah gajian bulan ini cuy".$end;
+            $response = "Kan udah gajian bulan ini cuy";
         else if($sisa_gajian == "0")
             $response = "Cek rekening BNI cuy";
         else if($sisa_gajian == "1")
