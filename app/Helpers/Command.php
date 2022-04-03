@@ -71,6 +71,9 @@ class Command
             case "18" : 
                 return self::mauBonus();
                 break;
+            case "19" : 
+                return self::mauSholat();
+                break;
             default :
                 "nothing";
             }
@@ -154,6 +157,10 @@ class Command
             '/mauBonus' => [
                 'deskripsi' => 'Cek Bonus',
                 'type' => 'text'
+            ],
+            '/mauSholat' => [
+                'deskripsi' => 'Cek waktu sholat dan imsak',
+                'type' => 'text'
             ]
         ];
     }
@@ -174,6 +181,9 @@ class Command
         $month  = date("Y-m");
         $start  = Carbon::parse($month)->startOfMonth();
         $end    = Carbon::parse($month)->endOfMonth();
+        
+        if($end->copy()->format('d') == 31)
+            $end    = $end->subDays(1);
 
         while ($start->lte($end)) {
             $carbon = Carbon::parse($start);
@@ -187,7 +197,7 @@ class Command
         $sisa_gajian = $last_work->diffInDays(self::getWaktu()['now']);
 
         if(self::getWaktu()['now'] > $last_work)
-            $response = "Kan udah gajian bulan ini cuy";
+            $response = "Kan udah gajian bulan ini cuy".$end;
         else if($sisa_gajian == "0")
             $response = "Cek rekening BNI cuy";
         else if($sisa_gajian == "1")
@@ -529,5 +539,26 @@ class Command
     public static function mauBonus() 
     {
         return 'Biasanya dibarengin sama THR atau nunggu outbound yg gajelas itu';
+    }
+
+    public static function mauSholat()
+    {
+        $date = date("Y/m/d");
+        $url = "https://api.myquran.com/v1/sholat/jadwal/1107/".$date;
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $url);
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        $response = "Informasi Jadwal Sholat Hari Ini \n";
+        $response .= "Wilayah : ".$data['data']['lokasi']." \n";
+        $response .= "Waktu : ".$data['data']['jadwal']['tanggal']." \n\n";
+        $response .= "Imsak : ".$data['data']['jadwal']['imsak']."\n";
+        $response .= "Subuh : ".$data['data']['jadwal']['subuh']."\n";
+        $response .= "Dzuhur : ".$data['data']['jadwal']['dzuhur']."\n";
+        $response .= "Ashar : ".$data['data']['jadwal']['ashar']."\n";
+        $response .= "Maghrib : ".$data['data']['jadwal']['maghrib']."\n";
+        $response .= "Isya : ".$data['data']['jadwal']['isya']."\n";
+
+        return $response;
     }
 }
