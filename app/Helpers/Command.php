@@ -169,9 +169,9 @@ class Command
     {
         return [
             'now'           => Carbon::parse(date("Y-m-d H:i:s")),
-            'masuk'         => Carbon::parse('09:00:00'),
-            'batas_masuk'   => Carbon::parse('10:00:00'),
-            'pulang'        => Carbon::parse('18:00:00'),
+            'masuk'         => Carbon::parse('08:00:00'),
+            'batas_masuk'   => Carbon::parse('09:00:00'),
+            'pulang'        => Carbon::parse('16:30:00'),
             'batas_pulang'  => Carbon::parse('23:59:59')
         ];
     }
