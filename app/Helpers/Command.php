@@ -169,9 +169,9 @@ class Command
     {
         return [
             'now'           => Carbon::parse(date("Y-m-d H:i:s")),
-            'masuk'         => Carbon::parse('08:00:00'),
-            'batas_masuk'   => Carbon::parse('09:00:00'),
-            'pulang'        => Carbon::parse('16:30:00'),
+            'masuk'         => Carbon::parse('09:00:00'),
+            'batas_masuk'   => Carbon::parse('10:00:00'),
+            'pulang'        => Carbon::parse('18:00:00'),
             'batas_pulang'  => Carbon::parse('23:59:59')
         ];
     }
@@ -404,7 +404,8 @@ class Command
     public static function mauHari()
     {
         $hari = Util::cek_hari();
-        $response = "Lupa hari? Sekarang hari ".$hari." cuy";
+        $tanggal = date("d M Y");
+        $response = "Lupa hari? Sekarang hari ".$hari." Tanggal ".$tanggal." cuy";
         return $response;
     }
 
@@ -533,12 +534,12 @@ class Command
 
     public static function mauTHR() 
     {
-        return 'Kemungkinan sih 2 minggu sebelum idul fitri';
+        return 'Tahun 2022 : 14 April 2022';
     }
 
     public static function mauBonus() 
     {
-        return 'Biasanya dibarengin sama THR atau nunggu outbound yg gajelas itu';
+        return 'Termin 1 : 28 April 2022\nTermin 2 : Juni 2022';
     }
 
     public static function mauSholat()
