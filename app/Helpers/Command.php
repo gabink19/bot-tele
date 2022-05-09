@@ -539,7 +539,7 @@ class Command
 
     public static function mauBonus() 
     {
-        return 'Termin 1 : 28 April 2022\nTermin 2 : Juni 2022';
+        return "Termin 1 : 28 April 2022\nTermin 2 : Juni 2022";
     }
 
     public static function mauSholat()
