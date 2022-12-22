@@ -632,8 +632,8 @@ class Command
 
     public static function mauBonus() 
     {   
-        $response = "- Termin 1 : 28 April 2022 & Termin 2 : Juni 2022 \n";
-        $response .= "- Maret 2023 \n";
+        $response = "- Tahun 2022 : 28 April 2022 & Juni 2022 \n";
+        $response .= "- Tahun 2022 : Maret 2023 \n";
         return $response;
     }
 
