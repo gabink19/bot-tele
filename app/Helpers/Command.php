@@ -624,16 +624,16 @@ class Command
 
     public static function mauTHR() 
     {
-        $response = "Tahun 2021 : 30 April 2021 \n";
-        $response .= "Tahun 2022 : 14 April 2022 \n";
-        $response .= "Tahun 2023 : 7 April 2022 (Prediksi) \n";
+        $response = "- Tahun 2021 : 30 April 2021 \n";
+        $response .= "- Tahun 2022 : 14 April 2022 \n";
+        $response .= "- Tahun 2023 : 7 April 2022 (Prediksi) \n";
         return $response;
     }
 
     public static function mauBonus() 
     {   
-        $response = "Termin 1 : 28 April 2022 - Termin 2 : Juni 2022 \n";
-        $response .= "Maret 2023 \n";
+        $response = "- Termin 1 : 28 April 2022 & Termin 2 : Juni 2022 \n";
+        $response .= "- Maret 2023 \n";
         return $response;
     }
 
