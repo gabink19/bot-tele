@@ -626,7 +626,7 @@ class Command
     {
         $response = "- Tahun 2021 : 30 April 2021 \n";
         $response .= "- Tahun 2022 : 14 April 2022 \n";
-        $response .= "- Tahun 2023 : 7 April 2022 (Prediksi) \n";
+        $response .= "- Tahun 2023 : 7 April 2023 (Prediksi) \n";
         return $response;
     }
 
