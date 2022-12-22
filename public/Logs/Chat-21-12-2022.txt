@@ -1,0 +1,1 @@
+{"update_id":296929856,"message":{"message_id":113712,"from":{"id":823616834,"is_bot":false,"first_name":"Rizky","last_name":"Kuntoro","username":"rizkykuntoro","language_code":"id"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1671638403,"text":"lu pada ngasih ke gua?"}},

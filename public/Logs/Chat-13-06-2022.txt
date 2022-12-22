@@ -1,0 +1,1 @@
+{"update_id":296906094,"message":{"message_id":88587,"from":{"id":1243421652,"is_bot":false,"first_name":"Kevin","last_name":"Sunarsa","username":"kevin_sunarsa","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1655127074,"text":"kirain diapus karena ga bermutu wkwkwk"}},

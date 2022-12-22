@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Carbon\Carbon as Carbon;
+use Exception;
 
 class Command
 {
@@ -182,7 +183,7 @@ class Command
         $start  = Carbon::parse($month)->startOfMonth();
         $end    = Carbon::parse($month)->endOfMonth();
 
-        if($end->copy()->format('d') == 31)
+        if($end->copy()->format('d') == 26)
             $end    = $end->subDays(1);
 
         while ($start->lte($end)) {
@@ -222,7 +223,7 @@ class Command
 
     public static function mauGabut() 
     {
-        return 'https://5.182.209.205/category/box-office';
+        return 'http://104.237.198.197/';
     }
 
     public static function mauCrypto() 
@@ -260,6 +261,34 @@ class Command
 
     public static function mauPulang()
     {
+        try {
+            $now    = date('Hi');
+            $limit  = $now."+10";
+            $fh_res = fopen("count.txt", 'r') or die("Unable to open file!");
+            $read   = fread($fh_res,filesize("count.txt"));
+            if ($read==$limit) {
+                return "BACOT";
+            }else{
+                if ($read=='') {
+                    $limit = $now."+1";
+                }else{
+                    $parse = explode("+", $read);
+                    if ($now != $parse[0]) {
+                        $limit = $now."+1";
+                    }else{
+                        $count  = (int)$parse[1]+1;
+                        $limit = $now."+".$count;
+                    }
+                }
+            }
+
+            $fh = fopen("count.txt", "w") or die("Unable to open file!");;
+            fwrite($fh, $limit);
+            fclose($fh);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+            
+        }
         if(self::getWaktu()['now'] < self::getWaktu()['masuk']) 
             return 'Belum masuk cuy, rajin amat dah';
         else if(self::getWaktu()['now'] > self::getWaktu()['pulang'])
@@ -384,7 +413,14 @@ class Command
     {
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'https://random.imagecdn.app/v1/image?width=300&height=300&category=buildings&format=json');
-        return json_decode($response->getBody()->getContents(), true)['url'];
+        $rng = mt_rand(1, 100);
+        $randpik = mt_rand(1,2);
+        $rngArray = array(1,2,3,4,5,6,7,8,9,10);
+        if (in_array($rng, $rngArray)) {
+            return "https://radmed.co.id/dokter%20".$randpik.".jpg";
+        }else{
+            return json_decode($response->getBody()->getContents(), true)['url'];
+        }
     }
 
     public static function mauCat()
@@ -534,12 +570,17 @@ class Command
 
     public static function mauTHR() 
     {
-        return 'Tahun 2022 : 14 April 2022';
+        $response = "Tahun 2021 : 30 April 2021 \n";
+        $response .= "Tahun 2022 : 14 April 2022 \n";
+        $response .= "Tahun 2023 : 7 April 2022 (Prediksi) \n";
+        return $response;
     }
 
     public static function mauBonus() 
-    {
-        return "Termin 1 : 28 April 2022\nTermin 2 : Juni 2022";
+    {   
+        $response = "Termin 1 : 28 April 2022 - Termin 2 : Juni 2022 \n";
+        $response .= "Maret 2023 \n";
+        return $response;
     }
 
     public static function mauSholat()

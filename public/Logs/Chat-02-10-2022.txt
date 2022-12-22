@@ -1,0 +1,1 @@
+{"update_id":296919946,"message":{"message_id":103391,"from":{"id":1345374305,"is_bot":false,"first_name":"Mochamad Gibran","last_name":"M","username":"gibran1905"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1664715265,"text":"bikin bot buat ngasih tau klo harganya udh turun"}},

@@ -1,0 +1,1 @@
+{"update_id":296920793,"message":{"message_id":104252,"from":{"id":396647467,"is_bot":false,"first_name":"Septiadi","username":"septiadirahmawan","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1664969155,"text":"wih gua udah jadi manager"}},

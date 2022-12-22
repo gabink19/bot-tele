@@ -1,0 +1,1 @@
+{"update_id":296905891,"message":{"message_id":88384,"from":{"id":1345374305,"is_bot":false,"first_name":"Mochamad Gibran","last_name":"M","username":"gibran1905"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1655020576,"text":"bini nya mas alvin hijab?"}},

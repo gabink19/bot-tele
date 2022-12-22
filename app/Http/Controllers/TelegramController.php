@@ -12,13 +12,16 @@ class TelegramController extends Controller
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         if (!empty($updates["message"])) {
-            
             if (!file_exists("Logs"))
                 mkdir("Logs", 0775, true);
 
-            $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "a");
-            fwrite($fh, json_encode($updates).",\r\n");
-            fclose($fh);
+            try {
+                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                fwrite($fh, json_encode($updates).",\r\n");
+                fclose($fh);
+            } catch (\Exception $e) {
+                
+            }
             $command = "";
             if(!isset($updates["message"]["text"]))
                 $is_send = false;
@@ -47,7 +50,6 @@ class TelegramController extends Controller
                     }
                 }
             }
-
             if($is_send) {
                 $data['reply_to_message_id'] = $reply_to_message_id;
                 if($response == "Cek rekening BNI cuy") {
@@ -98,3 +100,4 @@ class TelegramController extends Controller
         Command::mauSholat();
     }
 }
+

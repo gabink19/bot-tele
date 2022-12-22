@@ -1,0 +1,1 @@
+{"update_id":296913145,"message":{"message_id":96194,"from":{"id":823616834,"is_bot":false,"first_name":"Rizky","last_name":"Kuntoro","username":"rizkykuntoro","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1660314748,"text":"udah 2 aja dari pegasus"}},
