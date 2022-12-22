@@ -633,7 +633,7 @@ class Command
     public static function mauBonus() 
     {   
         $response = "- Tahun 2022 : 28 April 2022 & Juni 2022 \n";
-        $response .= "- Tahun 2022 : Maret 2023 \n";
+        $response .= "- Tahun 2023 : Maret 2023 \n";
         return $response;
     }
 
