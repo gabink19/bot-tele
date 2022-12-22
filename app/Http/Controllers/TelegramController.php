@@ -99,5 +99,9 @@ class TelegramController extends Controller
     {
         Command::mauSholat();
     }
+    public function testgaji()
+    {
+       echo Command::mauGajianv2();
+    }
 }
 
