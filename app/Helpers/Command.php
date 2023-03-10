@@ -75,6 +75,18 @@ class Command
             case "19" : 
                 return self::mauSholat();
                 break;
+            case "20" : 
+                return self::mauTanggalMerah();
+                break;
+            case "21" : 
+                return self::mauPuasa();
+                break;
+            case "22" : 
+                return self::mauCurhat();
+                break;
+            case "23" : 
+                return self::mauReminder();
+                break;
             default :
                 "nothing";
             }
@@ -162,6 +174,22 @@ class Command
             '/mauSholat' => [
                 'deskripsi' => 'Cek waktu sholat dan imsak',
                 'type' => 'text'
+            ],
+            '/mauTanggalMerah' => [
+                'deskripsi' => 'Cek Tanggal Merah di hari kerja',
+                'type' => 'text'
+            ],
+            '/mauPuasa' => [
+                'deskripsi' => 'Cek Mulai Puasa dan Akhir Puasa di Tahun ini',
+                'type' => 'text'
+            ],
+            '/mauCurhat' => [
+                'deskripsi' => 'Curhat sama bot chatGPT',
+                'type' => 'text'
+            ],
+            '/mauReminder' => [
+                'deskripsi' => 'Bikin Pengingat di Tele',
+                'type' => 'text'
             ]
         ];
     }
@@ -218,9 +246,9 @@ class Command
             $tgl_gajian_skrg = date('Y-m-d',strtotime("-2 days",strtotime($tgl_gajian_skrg)));
         }else if ($hari_dualima_skrg=="Saturday") {
             $tgl_gajian_skrg = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_skrg)));
-        }else if (!Util::CheckTanggalMerah(date('Ym25')) && $hari_dualima_skrg=="Monday") {
+        }else if (Util::CheckTanggalMerah(date('Ym25')) && $hari_dualima_skrg=="Monday") {
             $tgl_gajian_skrg = date('Y-m-d',strtotime("-3 days",strtotime($tgl_gajian_skrg)));
-        }else if (!Util::CheckTanggalMerah(date('Ym25'))) {
+        }else if (Util::CheckTanggalMerah(date('Ym25'))) {
             $tgl_gajian_skrg = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_skrg)));
         }
 
@@ -234,7 +262,7 @@ class Command
             if ($diff->format("%a") == "1") {
                 $response = "Besok gajian cuy";
             }else{
-                $response = $diff->format("%a") . " hari lagi gajiannya cuy";
+                $response = $diff->format("%a") . " hari lagi gajiannya cuy !!";
             }
         }else if ($diff->format("%R") == "-") {
             $tgl_gajian_depan = date('Y-m-25',strtotime("+1 month",strtotime($tgl_gajian_skrg)));
@@ -243,9 +271,9 @@ class Command
                 $tgl_gajian_depan = date('Y-m-d',strtotime("-2 days",strtotime($tgl_gajian_depan)));
             }else if ($hari_dualima_depan=="Saturday") {
                 $tgl_gajian_depan = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_depan)));
-            }else if (!Util::CheckTanggalMerah(date('Ym25')) && $hari_dualima_depan=="Monday") {
+            }else if (Util::CheckTanggalMerah(date('Ym25',strtotime($tgl_gajian_depan))) && $hari_dualima_depan=="Monday") {
                 $tgl_gajian_depan = date('Y-m-d',strtotime("-3 days",strtotime($tgl_gajian_depan)));
-            }else if (!Util::CheckTanggalMerah(date('Ym25'))) {
+            }else if (Util::CheckTanggalMerah(date('Ym25',strtotime($tgl_gajian_depan)))) {
                 $tgl_gajian_depan = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_depan)));
             }
 
@@ -257,7 +285,7 @@ class Command
                 $rand = ["Baru gajian udah nnyain aja. \n","Baru juga gajian. \n","Dikemanain tuh gajinya udah abis aja. \n","Sabar masih lama gajiannya. \n"];
                 $response .= $rand[rand(0,3)];
             }
-            $response .= $diff->format("%a") . " hari lagi gajiannya cuy";
+            $response .= $diff->format("%a") . " hari lagi gajiannya cuy !!";
         }
 
         return $response;
@@ -396,6 +424,26 @@ class Command
         for($i=0; $i<count($isi); $i++) {
             $response .= $isi[$i]."\n";
         }
+        $isi = [];
+        foreach($array['forecast']['area'] as $value) {
+            if($value['@attributes']['description'] == 'Serpong' && $value['@attributes']['domain'] == $provinsi) {
+                foreach($value['parameter'] as $parameters) {
+                    if($parameters['@attributes']['id'] == "weather") {
+                        foreach($parameters['timerange'] as $data) {
+                            if(substr($data['@attributes']['datetime'],0,8) == date("Ymd")) {
+                                $isi[] = "(".substr($data['@attributes']['datetime'],8,2).":".substr($data['@attributes']['datetime'],10,2).") ".Util::get_cuaca($data['value']);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $updated_at = $array['forecast']['issue']['year']."-".$array['forecast']['issue']['month']."-".$array['forecast']['issue']['day']." ".$array['forecast']['issue']['hour'].":".$array['forecast']['issue']['minute'].":".$array['forecast']['issue']['second'];
+
+        $response .= "\n"."Kota : Kota Tangerang Selatan (Serpong) \n\n";
+        for($i=0; $i<count($isi); $i++) {
+            $response .= $isi[$i]."\n";
+        }
         $response .= "\nSumber : BMKG Indonesia";
         $response .= "\nUpdated at : ".$updated_at." WIB";
         return $response;
@@ -493,7 +541,8 @@ class Command
 
     public static function mauHari()
     {
-        $hari = Util::cek_hari();
+        $hariini = date("D");
+        $hari = Util::cek_hari($hariini);
         $tanggal = date("d M Y");
         $response = "Lupa hari? Sekarang hari ".$hari." Tanggal ".$tanggal." cuy";
         return $response;
@@ -632,8 +681,19 @@ class Command
 
     public static function mauBonus() 
     {   
-        $response = "- Tahun 2022 : 28 April 2022 & Juni 2022 \n";
-        $response .= "- Tahun 2023 : Maret 2023 \n";
+        $date1=date_create(date('Y-m-d'));
+        $date2=date_create("2023-03-01");
+        $diff=date_diff($date1,$date2);
+
+        $response = "- Tahun 2020 : 20 Januari 2020 \n";
+        $response .= "- Tahun 2021 : 29 April 2021 \n";
+        $response .= "- Tahun 2022 : 28 April 2022 & Juni 2022 \n";
+
+        if ($diff->format("%R") == "+") {
+                $response .= "- Tahun 2023 : Maret 2023 (".$diff->format("%a")." hari menuju maret.) \n";
+        }else if ($diff->format("%R") == "-") {
+                $response .= "- Tahun 2023 : ?? Maret 2023 (Katanya sih Maret) \n";
+        }
         return $response;
     }
 
@@ -642,12 +702,26 @@ class Command
         $date = date("Y/m/d");
         $url = "https://api.myquran.com/v1/sholat/jadwal/1107/".$date;
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $url);
-        $data = json_decode($response->getBody()->getContents(), true);
+        $resp = $client->request('GET', $url);
+        $data = json_decode($resp->getBody()->getContents(), true);
 
         $response = "Informasi Jadwal Sholat Hari Ini \n";
-        $response .= "Wilayah : ".$data['data']['lokasi']." \n";
         $response .= "Waktu : ".$data['data']['jadwal']['tanggal']." \n\n";
+        $response .= "Wilayah : ".$data['data']['lokasi']." \n";
+        $response .= "Imsak : ".$data['data']['jadwal']['imsak']."\n";
+        $response .= "Subuh : ".$data['data']['jadwal']['subuh']."\n";
+        $response .= "Dzuhur : ".$data['data']['jadwal']['dzuhur']."\n";
+        $response .= "Ashar : ".$data['data']['jadwal']['ashar']."\n";
+        $response .= "Maghrib : ".$data['data']['jadwal']['maghrib']."\n";
+        $response .= "Isya : ".$data['data']['jadwal']['isya']."\n\n";
+
+
+        $url = "https://api.myquran.com/v1/sholat/jadwal/1108/".$date;
+        $client = new \GuzzleHttp\Client();
+        $resp1 = $client->request('GET', $url);
+        $data = json_decode($resp1->getBody()->getContents(), true);
+
+        $response .= "Wilayah : ".$data['data']['lokasi']." \n";
         $response .= "Imsak : ".$data['data']['jadwal']['imsak']."\n";
         $response .= "Subuh : ".$data['data']['jadwal']['subuh']."\n";
         $response .= "Dzuhur : ".$data['data']['jadwal']['dzuhur']."\n";
@@ -656,5 +730,138 @@ class Command
         $response .= "Isya : ".$data['data']['jadwal']['isya']."\n";
 
         return $response;
+    }
+
+    public static function mauTanggalMerah()
+    {
+        $tahun_ini = date('Y');
+        $liburtahunini = [];
+        $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
+        $skip = ['Hari Kartini','Hari Ibu','Hari Ayah','Hari Batik'];
+        foreach ($array as $key => $value) {
+            $substr = substr($key, 0,4);
+            if ($substr==$tahun_ini && !Util::isWeekend($key) && !in_array($value['deskripsi'], $skip)) {
+                $hari = Util::cek_hari(date('D',strtotime($key)));
+                $output[] = "[".$hari.", ".date("d M Y",strtotime($key))."] ".$value['deskripsi'];
+            }
+        }
+        $response = "Informasi Tanggal Merah Tahun ini di hari kerja :\n\n";
+        $response .= implode("\n", $output);
+        return $response;
+    }
+
+    public static function mauPuasa()
+    {
+        $tahun_ini = date('Y');
+        $puasa = '';
+        $lebaran = '';
+        $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
+        foreach ($array as $key => $value) {
+            $substr = substr($key, 0,4);
+            if ($substr==$tahun_ini) {
+                if ($value['deskripsi']=='Hari Idul Fitri') {
+                    $lebaran = date('Y-m-d',strtotime($key));
+                    break;
+                }
+            }
+        }
+        $puasa = date('Y-m-d',strtotime('-30 days',strtotime($lebaran)));
+
+        $hari_ini=date_create(date('Y-m-d'));
+        $date2=date_create($puasa);
+        $diff=date_diff($hari_ini,$date2);
+
+        $date3=date_create($lebaran);
+        $diff_lebaran=date_diff($hari_ini,$date3);
+
+        $response = "Informasi Tanggal Mulai dan Akhir Puasa Tahun ini :\n\n";
+        if ($diff->format("%R%a") == 0) {
+                $response .= "- Hari ini hari pertama puasa, Selamat Berpuasa. \n";
+                $response .= "- ".$diff_lebaran->format("%a")." Hari Menuju Lebaran \n";
+                $response .= "- Lebaran Diperkirakan Tanggal ".date('d M Y',strtotime($lebaran))."\n";
+        }elseif ($diff->format("%R") == "+") {
+                $response .= "- Puasa Diperkirakan dimulai Tanggal ".date('d M Y',strtotime($puasa))."\n";
+                $response .= "- ".$diff->format("%a")." Hari Menuju Puasa \n";
+        }else if ($diff->format("%R") == "-") {
+                $response .= "- Lebaran Jatuh pada Tanggal ".date('d M Y',strtotime($lebaran))."\n";
+        }
+        return $response;
+    }
+
+    public static function mauCurhat($message='')
+    {         
+        if ($message!='') {   
+            $url        = "https://api.openai.com/v1/chat/completions";
+            $authorization = "Authorization: Bearer ".env("TOKEN_GPT");
+            $payload    = '{
+                             "model": "gpt-3.5-turbo",
+                             "messages": [{"role": "user", "content": "'.$message.'"}] 
+                            }';
+            $ch         = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',$authorization));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result     = curl_exec($ch);
+            if (curl_errno($ch)) {
+                $error_msg = curl_error($ch);
+            }
+            $result     = json_decode($result, true);
+            curl_close ($ch);
+        }
+
+        if (isset($error_msg)) {
+            try {
+                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                fwrite($fh, json_encode($error_msg).",\r\n");
+                fclose($fh);
+            } catch (\Exception $e) {
+                
+            }
+        }   
+            try {
+                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                fwrite($fh, json_encode($result).",\r\n");
+                fclose($fh);
+            } catch (\Exception $e) {
+                
+            }
+
+        return (isset($result['choices'][0]['message']['content']))?$result['choices'][0]['message']['content']:"Sini Curhat....";
+    }
+
+    public static function mauReminder($message='',$sender='')
+    {   
+        $array = json_decode(file_get_contents("reminder.json"), true); 
+        $old_array = $array;    
+        if ($message!='') {
+            $exploderMsg = explode(" ",$message);
+            $date = $exploderMsg[0];
+            if (Util::validateDate($date,"d/m/Y_H:i")) {
+                $message = str_replace($date." ", "", $message);
+                $msg = $message." ("."@".$sender['username'].")";
+                $array[$date][] = $msg;
+                $write = true;
+                if (isset($old_array[$date])) {
+                    foreach ($old_array[$date] as $value) {
+                        if ($value==$msg) {
+                            $write = false;
+                        }
+                    }
+                }
+
+                if ($write) {
+                    $fh = fopen("reminder.json", "w") or die("Unable to open file!");;
+                    fwrite($fh, json_encode($array));
+                    fclose($fh);
+                }
+
+                $date = date('d/m/Y H:i',strtotime($date));
+                return "Noted : $date $msg";
+            }
+        }
+
+        return "Format Reminder : /mauReminder {d/m/Y_H:i} {pesan reminder}";
     }
 }

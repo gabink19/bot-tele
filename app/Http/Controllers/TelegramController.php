@@ -17,7 +17,7 @@ class TelegramController extends Controller
 
             try {
                 $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-                fwrite($fh, json_encode($updates).",\r\n");
+                fwrite($fh, "XYYYXXX".json_encode($updates).",\r\n");
                 fclose($fh);
             } catch (\Exception $e) {
                 
@@ -35,6 +35,16 @@ class TelegramController extends Controller
                     foreach(Command::ListCommands() as $key => $value) {
                         $response .= $key." - ".$value['deskripsi']."\n";
                     }
+                    $is_send = true;
+                }else if (strpos(strtolower($message), "/maucurhat") !== false) {
+                    $pesan = str_replace("/maucurhat", "", strtolower($message));
+                    $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
+                    $response = Command::mauCurhat(ltrim($pesan));
+                    $is_send = true;
+                }else if (strpos(strtolower($message), "/maureminder") !== false) {
+                    $pesan = str_replace("/maureminder", "", strtolower($message));
+                    $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
+                    $response = Command::mauReminder(ltrim($pesan),$sender);
                     $is_send = true;
                 }
                 else {
@@ -97,7 +107,7 @@ class TelegramController extends Controller
 
     public function test()
     {
-        Command::mauSholat();
+        echo Command::mauReminder();
     }
     public function testgaji()
     {

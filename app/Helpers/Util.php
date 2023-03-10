@@ -87,8 +87,7 @@ class Util
         return number_format($number, 0, ',', '.');
     }
 
-    public static function cek_hari() {
-        $hari = date ("D");
+    public static function cek_hari($hari) {
         switch($hari) {
             case 'Sun':
                 $hari_ini = "Minggu";
@@ -147,5 +146,15 @@ class Util
             return $data[$id];
         else
             return "Tidak di ketahui";
+    }
+    
+    public static function isWeekend($date) {
+        $weekDay = date('w', strtotime($date));
+        return ($weekDay == 0 || $weekDay == 6);
+    }
+
+    public static function validateDate($date, $format = 'd/m/Y_H:i'){
+        $d = \DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) === $date;
     }
 }
