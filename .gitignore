@@ -5,3 +5,6 @@ Homestead.yaml
 .env
 .phpunit.result.cache
 /public/Logs/
+/public/quote/
+/quote-maker/.env
+

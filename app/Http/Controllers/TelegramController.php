@@ -11,13 +11,15 @@ class TelegramController extends Controller
     {
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
+        $today = date('Y-m-d');
+        $thr = '2023-04-06';
         if (!empty($updates["message"])) {
             if (!file_exists("Logs"))
                 mkdir("Logs", 0775, true);
 
             try {
                 $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-                fwrite($fh, "XYYYXXX".json_encode($updates).",\r\n");
+                fwrite($fh, date('H:i:s :').json_encode($updates).",\r\n");
                 fclose($fh);
             } catch (\Exception $e) {
                 
@@ -46,17 +48,74 @@ class TelegramController extends Controller
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauReminder(ltrim($pesan),$sender);
                     $is_send = true;
+                }else if (strpos(strtolower($message), "/mauloker") !== false) {
+                    $pesan = str_replace("/mauloker", "", strtolower($message));
+                    $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
+                    $response = Command::mauLoker(ltrim($pesan));
+
+                    $data['reply_to_message_id'] = $reply_to_message_id;
+                    $data['text'] = $response;
+                    Util::sendMessageHTML($data);
+                    echo response()->json([
+                        'status' => 'ok',
+                        'data' => $data,
+                        'message' => 'Send success'
+                    ], 200);
+                    die();
+                }else if (strpos(strtolower($message), "/maujadikutipan") !== false) {
+                    if (isset($updates["message"]["reply_to_message"]["text"])) {
+                        $response = Command::mauJadiKutipan($updates["message"]["reply_to_message"]["text"],$updates["message"]["reply_to_message"]["from"]["id"],$updates["message"]["reply_to_message"]["from"]["username"]." - (".$updates["message"]["reply_to_message"]["from"]["first_name"]." ".@$updates["message"]["reply_to_message"]["from"]["last_name"].")");
+                        $data['reply_to_message_id'] = $reply_to_message_id;
+                        if ($response!='') {
+                            $data['photo'] = $response;
+                            Util::sendPhotoKutipan($data);
+                            echo response()->json([
+                                'status' => 'ok',
+                                'data' => $data,
+                                'message' => 'Send success'
+                            ], 200);
+                            die();
+                        }
+                    }
+                    $response = "Reply pesan yang ingin dijadikan kutipan, dengan minimal 3 kata dan maksimal 15 kata.";
+                    $data['text'] = $response;
+                    Util::sendMessage($data);
+                    echo response()->json([
+                        'status' => 'ok',
+                        'data' => $data,
+                        'message' => 'Send success'
+                    ], 200);
+                    die();
                 }
                 else {
                     $i = 0;
+                    $found = false;
                     foreach(Command::ListCommands() as $key => $value) {
                         if (strtolower($message) == strtolower($key) || strtolower($message) == strtolower($key)."@".env('TELEGRAM_BOT_NAME')) {
                             $response = Command::ListActions($sender, $i);
                             $command = $key;
                             $is_send = true;
+                            $found = true;
                             break;
                         }
                         $i++;
+                    }
+                    if ($found==false) {
+                        if (strpos(strtolower($message), "/mau") !== false) {
+                            $pesan = str_replace("/mau", "", strtolower($message));
+                            $response = Command::mauRandom(ltrim($pesan));
+                            if ($response!='') {
+                                $data['reply_to_message_id'] = $reply_to_message_id;
+                                $data['photo'] = $response;
+                                Util::sendPhoto($data);
+                                echo response()->json([
+                                    'status' => 'ok',
+                                    'data' => $data,
+                                    'message' => 'Send success'
+                                ], 200);
+                                die();
+                            }
+                        }
                     }
                 }
             }
@@ -77,8 +136,12 @@ class TelegramController extends Controller
                         $data['photo'] = $response;
 
                     Util::sendPhoto($data);
-                }
-                else {
+                }else if($message == "/mauthr" && $today==$thr){
+                    $data['caption'] = $response;
+                    $data['animation'] = "https://motionisme.files.wordpress.com/2019/01/tenor-2-1.gif";
+
+                    Util::sendAnimation($data);
+                }else {
                     $data['text'] = $response;
                     Util::sendMessage($data);
                 }
@@ -107,11 +170,11 @@ class TelegramController extends Controller
 
     public function test()
     {
-        echo Command::mauReminder();
+        echo Command::mauJadiKutipan();
     }
     public function testgaji()
     {
-       echo Command::mauGajianv2();
+       echo Command::mauThr();
     }
 }
 

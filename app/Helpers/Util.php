@@ -13,6 +13,16 @@ class Util
             return false;
     }
 
+    public static function sendMessageHTML($data)
+    {
+        $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage"
+            . "?chat_id=" . env('TELEGRAM_CHAT_ID')
+            . "&text=" . urlencode($data['text']);
+        if(isset($data['reply_to_message_id']))
+            $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
+        file_get_contents($url."&parse_mode=html");
+    }
+
     public static function sendMessage($data)
     {
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage"
@@ -32,6 +42,16 @@ class Util
                 $url .= "&caption=" . $data['caption'];
             if(isset($data['parse_mode']))
                 $url .= "&parse_mode=" . $data['parse_mode'];
+            if(isset($data['reply_to_message_id']))
+                $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
+        file_get_contents($url);
+    }
+
+    public static function sendPhotoKutipan($data)
+    {
+        $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendPhoto"
+            . "?chat_id=" . env('TELEGRAM_CHAT_ID')
+            . "&photo=" . $data['photo'];
             if(isset($data['reply_to_message_id']))
                 $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
         file_get_contents($url);

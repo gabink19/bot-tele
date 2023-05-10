@@ -87,6 +87,12 @@ class Command
             case "23" : 
                 return self::mauReminder();
                 break;
+            case "24" : 
+                return self::mauLoker();
+                break;
+            case "25" : 
+                return self::mauJadiKutipan();
+                break;
             default :
                 "nothing";
             }
@@ -189,6 +195,10 @@ class Command
             ],
             '/mauReminder' => [
                 'deskripsi' => 'Bikin Pengingat di Tele',
+                'type' => 'text'
+            ],
+            '/mauLoker' => [
+                'deskripsi' => 'Menampilkan 5 Loker Terbaru (Salary>15jt)',
                 'type' => 'text'
             ]
         ];
@@ -513,23 +523,33 @@ class Command
 
     public static function mauLiburan()
     {
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'https://random.imagecdn.app/v1/image?width=300&height=300&category=buildings&format=json');
-        $rng = mt_rand(1, 100);
-        $randpik = mt_rand(1,2);
-        $rngArray = array(1,2,3,4,5,6,7,8,9,10);
-        if (in_array($rng, $rngArray)) {
-            return "https://radmed.co.id/dokter%20".$randpik.".jpg";
-        }else{
-            return json_decode($response->getBody()->getContents(), true)['url'];
+        try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', 'https://api.unsplash.com/photos/random?client_id=Ff1Ep2lLgcuTmf9rUEAMd9Dtya8HerwBBYkW0wH2Qsw&query=vacation');
+            $rng = mt_rand(1, 100);
+            $randpik = mt_rand(1,2);
+            $rngArray = array(1,2,3,4,5,6,7,8,9,10);
+            if (in_array($rng, $rngArray)) {
+                return "https://radmed.co.id/dokter%20".$randpik.".jpg";
+            }else{
+                return json_decode($response->getBody()->getContents(), true)['urls']['small'];
+            }
+
+        } catch (Exception $e) {
+            die();
         }
     }
 
     public static function mauCat()
-    {
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'https://aws.random.cat/meow');
-        return json_decode($response->getBody()->getContents(), true)['file'];
+    {   
+        try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', 'https://api.unsplash.com/photos/random?client_id=Ff1Ep2lLgcuTmf9rUEAMd9Dtya8HerwBBYkW0wH2Qsw&query=cat');
+            
+            return json_decode($response->getBody()->getContents(), true)['urls']['small'];
+        } catch (Exception $e) {
+            die();
+        }
     }
 
     public static function mauDog()
@@ -673,27 +693,30 @@ class Command
 
     public static function mauTHR() 
     {
-        $response = "- Tahun 2021 : 30 April 2021 \n";
+        $hari_ini=date_create(date('Y-m-d'));
+        $thr=date_create('2023-04-06');
+        $diff=date_diff($hari_ini,$thr);
+        $add = "";
+        $response="";
+
+        if ($diff->format("%R%a") == 0) {
+            $response .= "Cek rekening BNI cuy \n\n";
+        }else if ($diff->format("%R") == "+") {
+            $add = "(".$diff->format("%a")." Hari Lagi !!)";
+        }
+        $response .= "- Tahun 2021 : 30 April 2021 \n";
         $response .= "- Tahun 2022 : 14 April 2022 \n";
-        $response .= "- Tahun 2023 : 7 April 2023 (Prediksi) \n";
+        $response .= "- Tahun 2023 : 6 April 2023 ".$add." \n";
         return $response;
     }
 
     public static function mauBonus() 
     {   
-        $date1=date_create(date('Y-m-d'));
-        $date2=date_create("2023-03-01");
-        $diff=date_diff($date1,$date2);
-
         $response = "- Tahun 2020 : 20 Januari 2020 \n";
         $response .= "- Tahun 2021 : 29 April 2021 \n";
-        $response .= "- Tahun 2022 : 28 April 2022 & Juni 2022 \n";
+        $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
+        $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & ?? ?? 2023 (10%) \n";
 
-        if ($diff->format("%R") == "+") {
-                $response .= "- Tahun 2023 : Maret 2023 (".$diff->format("%a")." hari menuju maret.) \n";
-        }else if ($diff->format("%R") == "-") {
-                $response .= "- Tahun 2023 : ?? Maret 2023 (Katanya sih Maret) \n";
-        }
         return $response;
     }
 
@@ -761,6 +784,11 @@ class Command
             if ($substr==$tahun_ini) {
                 if ($value['deskripsi']=='Hari Idul Fitri') {
                     $lebaran = date('Y-m-d',strtotime($key));
+                    $hariini = date('Y-m-d');
+                    if (strtotime($lebaran)<strtotime($hariini)) {
+                        $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
+                        continue;
+                    }
                     break;
                 }
             }
@@ -783,7 +811,8 @@ class Command
                 $response .= "- Puasa Diperkirakan dimulai Tanggal ".date('d M Y',strtotime($puasa))."\n";
                 $response .= "- ".$diff->format("%a")." Hari Menuju Puasa \n";
         }else if ($diff->format("%R") == "-") {
-                $response .= "- Lebaran Jatuh pada Tanggal ".date('d M Y',strtotime($lebaran))."\n";
+                $response .= "- ".$diff_lebaran->format("%a")." Hari Menuju Lebaran \n";
+                $response .= "- Lebaran Jatuh pada Tanggal ".date('d M Y',strtotime($lebaran))." (Bisa Berubah)\n";
         }
         return $response;
     }
@@ -857,11 +886,144 @@ class Command
                     fclose($fh);
                 }
 
-                $date = date('d/m/Y H:i',strtotime($date));
+                // $date = date('d/m/Y H:i',strtotime($date));
                 return "Noted : $date $msg";
             }
         }
 
         return "Format Reminder : /mauReminder {d/m/Y_H:i} {pesan reminder}";
+    }
+
+    public static function mauLoker($message='backend engineer',$limit=10)
+    {   
+        try {
+            $now    = date('Hi');
+            $max  = $now;
+            $fh_res = fopen("countLoker.txt", 'r') or die("Unable to open file!");
+            $read   = fread($fh_res,filesize("countLoker.txt"));
+            if ($read==$max) {
+                return "/mauLoker hanya bisa di hit 1 menit sekali.";
+            }
+
+            $fh = fopen("countLoker.txt", "w") or die("Unable to open file!");;
+            fwrite($fh, $max);
+            fclose($fh);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+            
+        }
+        if($message==''){
+            $message='Programmer';
+        }
+        $count = 1 ;
+        $response = "Menampilkan ".$limit." loker '$message' :\n\n";
+        for ($i=1; $i < 100; $i++) { 
+            $url        = "https://xapi.supercharge-srp.co/job-search/graphql?country=id&isSmartSearch=true";
+            $payload    = '{
+                            "query": "query getJobs($country: String, $locale: String, $keyword: String, $createdAt: String, $jobFunctions: [Int], $categories: [String], $locations: [Int], $careerLevels: [Int], $minSalary: Int, $maxSalary: Int, $salaryType: Int, $candidateSalary: Int, $candidateSalaryCurrency: String, $datePosted: Int, $jobTypes: [Int], $workTypes: [String], $industries: [Int], $page: Int, $pageSize: Int, $companyId: String, $advertiserId: String, $userAgent: String, $accNums: Int, $subAccount: Int, $minEdu: Int, $maxEdu: Int, $edus: [Int], $minExp: Int, $maxExp: Int, $seo: String, $searchFields: String, $candidateId: ID, $isDesktop: Boolean, $isCompanySearch: Boolean, $sort: String, $sVi: String, $duplicates: String, $flight: String, $solVisitorId: String) {\n  jobs(\n    country: $country\n    locale: $locale\n    keyword: $keyword\n    createdAt: $createdAt\n    jobFunctions: $jobFunctions\n    categories: $categories\n    locations: $locations\n    careerLevels: $careerLevels\n    minSalary: $minSalary\n    maxSalary: $maxSalary\n    salaryType: $salaryType\n    candidateSalary: $candidateSalary\n    candidateSalaryCurrency: $candidateSalaryCurrency\n    datePosted: $datePosted\n    jobTypes: $jobTypes\n    workTypes: $workTypes\n    industries: $industries\n    page: $page\n    pageSize: $pageSize\n    companyId: $companyId\n    advertiserId: $advertiserId\n    userAgent: $userAgent\n    accNums: $accNums\n    subAccount: $subAccount\n    minEdu: $minEdu\n    edus: $edus\n    maxEdu: $maxEdu\n    minExp: $minExp\n    maxExp: $maxExp\n    seo: $seo\n    searchFields: $searchFields\n    candidateId: $candidateId\n    isDesktop: $isDesktop\n    isCompanySearch: $isCompanySearch\n    sort: $sort\n    sVi: $sVi\n    duplicates: $duplicates\n    flight: $flight\n    solVisitorId: $solVisitorId\n  ) {\n    total\n    totalJobs\n  jobs {\n      id\n      adType\n      sourceCountryCode\n      isStandout\n      companyMeta {\n        id\n        advertiserId\n        isPrivate\n        name\n        logoUrl\n        slug\n      }\n      jobTitle\n      jobUrl\n      jobTitleSlug\n      description\n      employmentTypes {\n        code\n        name\n      }\n      sellingPoints\n      locations {\n        code\n        name\n        slug\n        children {\n          code\n          name\n          slug\n        }\n      }\n      categories {\n        code\n        name\n        children {\n          code\n          name\n        }\n      }\n      postingDuration\n      postedAt\n      salaryRange {\n        currency\n        max\n        min\n        period\n        term\n      }\n      salaryVisible\n      bannerUrl\n      isClassified\n      solMetadata\n    }\n  }\n}\n",
+                            "variables": {
+                                "keyword": "'.$message.'",
+                                "jobFunctions": [],
+                                "locations": [],
+                                "salaryType": 1,
+                                "jobTypes": [],
+                                "createdAt": null,
+                                "careerLevels": [],
+                                "page": '.$i.',
+                                "country": "id",
+                                "sVi": "[CS]v1|315A968201DFF6C2-6000161643DB195A[CE]",
+                                "solVisitorId": "6891072a-6a24-407d-8e4b-a8852934d6bf",
+                                "categories": [],
+                                "workTypes": [],
+                                "userAgent": "Mozilla/5.0%20(Windows%20NT%2010.0;%20Win64;%20x64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/112.0.0.0%20Safari/537.36",
+                                "industries": [],
+                                "sort": "createdAt",
+                                "minSalary": 10000000,
+                                "locale": "id"
+                            }
+                        }';
+            $ch         = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result     = curl_exec($ch);
+            if (curl_errno($ch)) {
+                $error_msg = curl_error($ch);
+            }
+            $result  = json_decode($result, true);
+            curl_close ($ch);
+
+            if (isset($result['data']['jobs']['jobs'])) {
+                foreach ($result['data']['jobs']['jobs'] as $key => $value) {
+                    if (isset($value['salaryRange']['max']) && $value['salaryRange']['max'] != null && $value['salaryRange']['max'] > 15000000) {
+                        if ($count>$limit) {
+                            break;
+                        }
+                        $response .= "<b>".$count.". ".$value['jobTitle']." (".$value['companyMeta']['name']." - ".$value['locations'][0]['name'].")</b>\n";
+                        $response .= "- Range Gaji : Rp. ".number_format($value['salaryRange']['min'],2,',','.')." - ".number_format($value['salaryRange']['max'],2,',','.')."\n";
+                        $response .= "- Tanggal Posting : ".date('d-M-Y H:i',strtotime($value['postedAt']))."\n";
+                        $response .= "- Tipe Kerja : ".$value['employmentTypes'][0]['name']."\n";
+                        $response .= "- Link : ".$value['jobUrl']."\n";
+                        $count++;
+                    }
+                }
+            }else{
+                break;
+            }
+        }
+        
+
+        return $response;
+    }
+
+    public static function mauRandom($message='rebahanAJaGaskeunLah')
+    {
+        try {
+            $array = json_decode(file_get_contents('https://api.unsplash.com/photos/random?client_id=Ff1Ep2lLgcuTmf9rUEAMd9Dtya8HerwBBYkW0wH2Qsw&lang=id&query='.$message), true); 
+            if (isset($array['urls']['small'])) {
+                return $array['urls']['small'];     
+            }
+        } catch (Exception $e) {
+            die();
+        }
+        
+        return '';
+    }
+
+    public static function mauJadiKutipan($message='ASSALAMUALAIKUM TI GUYS',$userID='1243421652',$nama='XX')
+    {
+        $words = explode(" ", $message);
+        if (count($words) < 3 || count($words) > 15) {
+            return '';
+        }
+        try {
+            $msg = ucfirst($message);
+            $message = base64_encode($msg);
+            $nama = base64_encode($nama);
+            $uniq = uniqid();
+            putenv("PATH=/home/system_user/bin:/home/system_user/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/system_user/.composer/vendor/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin:/usr/local/go/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin");
+
+            $command = shell_exec("/var/www/html/radmed.co.id/bot-tele/quote-maker/run.sh $nama $message $userID $uniq 2>&1");
+            // if ($command === null) {
+            //     $error = error_get_last();
+            //     echo "Error: " . $error['message'];
+            // } else {
+            //     echo $command;
+            // }
+            $command = shell_exec("chmod 777 /var/www/html/radmed.co.id/bot-tele/public/quote/".$uniq.".png");
+            // Menjalankan perintah dan menyimpan outputnya
+            // if ($command === null) {
+            //     $error = error_get_last();
+            //     echo "Error: " . $error['message'];
+            // } else {
+            //     echo $command;
+            // }
+            return "https://radmed.co.id/bot-tele/public/quote/".$uniq.".png";
+        } catch (Exception $e) {
+        }
+        
+        return '';
     }
 }
