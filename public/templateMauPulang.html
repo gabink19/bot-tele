@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Countdown Bot</title>
+</head>
+<body>
+  <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <h1 style="font-size: 48px; text-align: center;" id="timer"></h1>
+  </div>
+
+  <script>
+    function startCountdown() {
+      var now = new Date();
+      var target = new Date();
+      target.setHours(18, 0, 0); // Set target waktu ke jam 18:00
+
+      if (now > target) {
+        target.setDate(target.getDate() + 1); // Tambahkan 1 hari jika sudah melewati jam 18:00 hari ini
+      }
+
+      var countdown = setInterval(function() {
+        now = new Date();
+        var distance = target - now;
+
+        var hours = Math.floor(distance / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        var countdownElement = document.getElementById("timer");
+        countdownElement.innerHTML = ("0" + hours).slice(-2) + " jam "
+          + ("0" + minutes).slice(-2) + " menit "
+          + ("0" + seconds).slice(-2) + " detik lagi cuy !";
+
+        if (distance < 0) {
+          clearInterval(countdown);
+          countdownElement.innerHTML = "Countdown selesai!";
+        }
+      }, 1000);
+    }
+
+    // Panggil fungsi startCountdown saat halaman dimuat
+    window.onload = startCountdown;
+  </script>
+</body>
+</html>
+
