@@ -47,6 +47,7 @@ class TelegramController extends Controller
                 $message = $updates["message"]["text"];
                 $reply_to_message_id = $updates["message"]["message_id"];
                 $sender = $updates["message"]["from"];
+                $chatId = $updates["message"]["chat"]["id"];
                 $response = "";
                 if ($message == "/start" || strtolower($message) == "/start@".env('TELEGRAM_BOT_NAME')) {
                     $response = "Hello! I'm a bot. I'm here to help you to gabut maksimal.\n\n";
@@ -76,7 +77,7 @@ class TelegramController extends Controller
 
                     $data['reply_to_message_id'] = $reply_to_message_id;
                     $data['text'] = $response;
-                    Util::sendMessageHTML($data);
+                    Util::sendMessageHTML($data,$chatId);
                     echo response()->json([
                         'status' => 'ok',
                         'data' => $data,
@@ -91,7 +92,7 @@ class TelegramController extends Controller
                         $data['reply_to_message_id'] = $reply_to_message_id;
                         if ($response!='') {
                             $data['photo'] = $response;
-                            Util::sendPhotoKutipan($data);
+                            Util::sendPhotoKutipan($data,$chatId);
                             echo response()->json([
                                 'status' => 'ok',
                                 'data' => $data,
@@ -102,7 +103,7 @@ class TelegramController extends Controller
                     }
                     $response = "Reply pesan yang ingin dijadikan kutipan, dengan minimal 3 kata dan maksimal 15 kata.";
                     $data['text'] = $response;
-                    Util::sendMessage($data);
+                    Util::sendMessage($data,$chatId);
                     echo response()->json([
                         'status' => 'ok',
                         'data' => $data,
@@ -120,7 +121,7 @@ class TelegramController extends Controller
                     if ($response!='') {
                         $data['reply_to_message_id'] = $reply_to_message_id;
                         $data['photo'] = $response;
-                        Util::sendPhotoCurl($data);
+                        Util::sendPhotoCurl($data,$chatId);
                         echo response()->json([
                             'status' => 'ok',
                             'data' => $data,
@@ -149,7 +150,7 @@ class TelegramController extends Controller
                             if ($response!='') {
                                 $data['reply_to_message_id'] = $reply_to_message_id;
                                 $data['photo'] = $response;
-                                Util::sendPhoto($data);
+                                Util::sendPhoto($data,$chatId);
                                 echo response()->json([
                                     'status' => 'ok',
                                     'data' => $data,
@@ -167,7 +168,7 @@ class TelegramController extends Controller
                     $data['caption'] = $response;
                     $data['animation'] = "https://motionisme.files.wordpress.com/2019/01/tenor-2-1.gif";
 
-                    Util::sendAnimation($data);
+                    Util::sendAnimation($data,$chatId);
                 }
                 else if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
                     // if (strpos(strtolower($message), 'maucekgempa') !== false) {
@@ -177,19 +178,19 @@ class TelegramController extends Controller
                     // else
                         $data['photo'] = $response;
 
-                    Util::sendPhoto($data);
+                    Util::sendPhoto($data,$chatId);
                 }else if($message == "/mauthr" && $today==$thr){
                     $data['caption'] = $response;
                     $data['animation'] = "https://motionisme.files.wordpress.com/2019/01/tenor-2-1.gif";
 
-                    Util::sendAnimation($data);
+                    Util::sendAnimation($data,$chatId);
                 }else {
                     if ($response=='htmlPulang') {
                         $data['text'] = '';
                         // Util::sendMessageHTML($data);
                     }else{
                         $data['text'] = $response;
-                        Util::sendMessage($data);
+                        Util::sendMessage($data,$chatId);
                     }
                 }
                 echo response()->json([
