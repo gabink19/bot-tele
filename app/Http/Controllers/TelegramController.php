@@ -53,6 +53,7 @@ class TelegramController extends Controller
                     foreach(Command::ListCommands() as $key => $value) {
                         $response .= $key." - ".$value['deskripsi']."\n";
                     }
+                    $response .= "\n"."Visit my latest repo : https://github.com/gabink19/bot-tele.git";
                     $is_send = true;
                 }else if (strpos(strtolower($message), "/maucurhat") !== false) {
                     $pesan = str_replace("/maucurhat", "", strtolower($message));
