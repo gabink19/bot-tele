@@ -1139,12 +1139,15 @@ class Command
         $no = 1;
         if (isset($result['data']) && !empty($result)) {
             foreach($result['data'] as $k => $v){
-                $response .= "<b>".$no.". ".$v['review_title']."(".date('d-M-Y',strtotime($v['created_at']))."</b>"."\n";
-                $response .= "- Rating (Company Overall) : ".$v['rating']['company_overall']." bintang"."\n";
-                $response .= "- Job Title : ".$v['job_title']."\n";
-                $response .= "- Pros Comment : ".$v['pros']."\n";
-                $response .= "- Cons Comment : ".$v['cons']."\n";
+                $response .= "<b>".$no.". ".$v['review_title']." (".date('d-M-Y',strtotime($v['created_at'])).")</b>"."\n";
+                $response .= "   - Rating (Company Overall) : ".$v['rating']['company_overall']." bintang"."\n";
+                $response .= "   - Job Title : ".$v['job_title']."\n";
+                $response .= "   - Pros Comment : ".$v['pros']."\n";
+                $response .= "   - Cons Comment : ".$v['cons']."\n";
                 $no++;
+                if($no>5){
+                    break;
+                }
             }
         }else{
             $response .= "Sepertinya error.";
