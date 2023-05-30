@@ -1149,5 +1149,7 @@ class Command
         }else{
             $response .= "Sepertinya error.";
         }
+
+        return $response;
     }
 }
