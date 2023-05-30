@@ -1122,6 +1122,7 @@ class Command
     public static function mauReview()
     {
         $response = "Menampilkan 5 Review terbaru SPE :\n\n";
+        $response .= "<hr>";
         
         $url        = "https://api-js.prod.companyreview.co/companies/1284069/company-reviews?page=1&sort=";
         $ch         = curl_init();
@@ -1144,6 +1145,7 @@ class Command
                 $response .= "   - Job Title : ".$v['job_title']."\n";
                 $response .= "   - Pros Comment : ".$v['pros']."\n";
                 $response .= "   - Cons Comment : ".$v['cons']."\n";
+                $response .= "<hr>";
                 $no++;
                 if($no>5){
                     break;
