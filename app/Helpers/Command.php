@@ -98,6 +98,9 @@ class Command
             case "26" : 
                 return self::mauJadiGambar();
                 break;
+            case "27" : 
+                return self::mauReview();
+                break;
             default :
                 "nothing";
             }
@@ -204,6 +207,10 @@ class Command
             ],
             '/mauLoker' => [
                 'deskripsi' => 'Menampilkan 5 Loker Terbaru (Salary>15jt)',
+                'type' => 'text'
+            ],
+            '/mauReview' => [
+                'deskripsi' => 'Menampilkan 5 Review SPE Terbaru',
                 'type' => 'text'
             ]
         ];
@@ -1112,4 +1119,36 @@ class Command
         return (isset($result['data'][0]['url']))?$result['data'][0]['url']:"";
     }
 
+    public static function mauReview()
+    {
+        $response = "Menampilkan 5 Review terbaru SPE :\n\n";
+        
+        $url        = "https://api-js.prod.companyreview.co/companies/1284069/company-reviews?page=1&sort=";
+        $ch         = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','X-Country-Iso: id'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result     = curl_exec($ch);
+        if (curl_errno($ch)) {
+            $error_msg = curl_error($ch);
+        }
+        $result  = json_decode($result, true);
+        curl_close ($ch);
+        
+        $no = 1;
+        if (isset($result['data']) && !empty($result)) {
+            foreach($result['data'] as $k => $v){
+                $response .= "<b>".$no.". ".$v['review_title']."(".date('d-M-Y',strtotime($v['created_at']))."</b>"."\n";
+                $response .= "- Rating (Company Overall) : ".$v['company_overall']." bintang"."\n";
+                $response .= "- Job Title : ".$v['job_title']."\n";
+                $response .= "- Pros Comment : ".$v['pros']."\n";
+                $response .= "- Cons Comment : ".$v['cons']."\n";
+                $no++;
+            }
+        }else{
+            $response .= "Sepertinya error.";
+        }
+    }
 }

@@ -55,7 +55,7 @@ class Util
             . "&text=" . urlencode($data['text']);
         if(isset($data['reply_to_message_id']))
             $url .= "&reply_to_message_id=" . $data['reply_to_message_id'];
-        file_get_contents($url);
+        file_get_contents($url."&parse_mode=html");
     }
 
     public static function sendPhoto($data,$chatId)

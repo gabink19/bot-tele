@@ -172,12 +172,7 @@ class TelegramController extends Controller
                     Util::sendAnimation($data,$chatId);
                 }
                 else if(isset(Command::ListCommands()[$command]) && (Command::ListCommands()[$command]['type'] == 'image')) {
-                    // if (strpos(strtolower($message), 'maucekgempa') !== false) {
-                    //     $data['caption'] = $response[0];
-                    //     $data['photo'] = $response[1];
-                    // }
-                    // else
-                        $data['photo'] = $response;
+                    $data['photo'] = $response;
 
                     Util::sendPhoto($data,$chatId);
                 }else if($message == "/mauthr" && $today==$thr){
