@@ -93,13 +93,13 @@ class Command
                 return self::mauLoker();
                 break;
             case "25" : 
-                return self::mauJadiKutipan();
+                return self::mauReview();
                 break;
             case "26" : 
-                return self::mauJadiGambar();
+                return self::mauJadiKutipan();
                 break;
             case "27" : 
-                return self::mauReview();
+                return self::mauJadiGambar();
                 break;
             default :
                 "nothing";
