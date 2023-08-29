@@ -81,7 +81,7 @@ class Command
         ];
     }
 
-    public static function mauStart($value='')
+    public static function mauStart($chat_id)
     {
         $idx = 0;
         $idxs = 0;
@@ -99,7 +99,7 @@ class Command
         $encodedKeyboard = json_encode($keyboard);
         $parameters = 
             array(
-                'chat_id' => env('TELEGRAM_CHAT_ID'), 
+                'chat_id' => $chat_id, 
                 'text' => 'Silahkan Pilih Menu :', 
                 'reply_markup' => $encodedKeyboard
             );

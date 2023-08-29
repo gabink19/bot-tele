@@ -41,7 +41,7 @@ class TelegramController extends Controller
                 $chatId = $updates["message"]["chat"]["id"];
                 $response = "";
                 if ($message == "/start" || strtolower($message) == "/start@".env('TELEGRAM_BOT_NAME')) {
-                    $response = Command::mauStart();
+                    $response = Command::mauStart($chatId);
                     $response .= "\n"."Visit my latest repo : https://github.com/gabink19/bot-tele.git";
                     $is_send = false;
                 }else {
