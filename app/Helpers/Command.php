@@ -154,7 +154,7 @@ class Command
     public static function chatGPT($message='')
     {         
         if ($message!='') {   
-            if (strpos($message, '--data') === false) {
+            if (strpos($message, '--data') === true) {
                 $message .= " ".self::getData();
             } 
             $url        = "https://api.openai.com/v1/chat/completions";
