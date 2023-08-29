@@ -18,6 +18,7 @@ class TelegramController extends Controller
             $updates["message"]["text"] = $upd["callback_query"]["data"];
             $updates["message"]["message_id"] = $upd["callback_query"]["message"]["message_id"];
             $updates["message"]["from"] = $upd["callback_query"]["message"]["from"];
+            $updates["message"]["chat"]["id"] = $upd["callback_query"]["message"]["chat"]["id"];
         }
         if (!empty($updates["message"])) {
             if (!file_exists("Logs"))
@@ -37,7 +38,7 @@ class TelegramController extends Controller
                 $message = $updates["message"]["text"];
                 $reply_to_message_id = $updates["message"]["message_id"];
                 $sender = $updates["message"]["from"];
-                // $chatId = $updates["message"]["chat"]["id"];
+                $chatId = $updates["message"]["chat"]["id"];
                 $response = "";
                 if ($message == "/start" || strtolower($message) == "/start@".env('TELEGRAM_BOT_NAME')) {
                     $response = Command::mauStart();
