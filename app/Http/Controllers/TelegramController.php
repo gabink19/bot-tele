@@ -11,6 +11,21 @@ class TelegramController extends Controller
     {
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
+        if (isset($upd["callback_query"])) {
+            if (!file_exists("Logs"))
+                mkdir("Logs", 0775, true);
+
+            try {
+                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                fwrite($fh, date('H:i:s :').json_encode($upd).",\r\n");
+                fclose($fh);
+            } catch (\Exception $e) {
+                
+            }
+            $updates["message"]["text"] = $upd["callback_query"]["data"];
+            $updates["message"]["message_id"] = $upd["callback_query"]["message"]["message_id"];
+            $updates["message"]["from"] = $upd["callback_query"]["message"]["from"];
+        }
         if (!empty($updates["message"])) {
             if (!file_exists("Logs"))
                 mkdir("Logs", 0775, true);
