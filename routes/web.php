@@ -17,5 +17,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/test', 'TelegramController@test');
-$router->post('/telegram', 'TelegramController@index');
+$router->group(['prefix' => 'v2'], function () use ($router) {
+    $router->get('/test', 'TelegramController@test');
+    $router->post('/telegram', 'TelegramController@index');
+});
