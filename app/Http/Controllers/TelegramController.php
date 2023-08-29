@@ -37,7 +37,7 @@ class TelegramController extends Controller
                 $message = $updates["message"]["text"];
                 $reply_to_message_id = $updates["message"]["message_id"];
                 $sender = $updates["message"]["from"];
-                $chatId = $updates["message"]["chat"]["id"];
+                // $chatId = $updates["message"]["chat"]["id"];
                 $response = "";
                 Log::info('----Message----');
                 Log::info($message);
