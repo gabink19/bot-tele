@@ -164,6 +164,13 @@ class Command
                              "model": "gpt-3.5-turbo",
                              "messages": [{"role": "user", "content": "'.$message.'"}] 
                             }';
+                            try {
+                                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                                fwrite($fh, date('H:i:s :').json_encode($payload).",\r\n");
+                                fclose($fh);
+                            } catch (\Exception $e) {
+                                
+                            }
             $ch         = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
