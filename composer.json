@@ -5,7 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.3",
+        "google/apiclient": "2.15.0",
         "grei/tanggalmerah": "^1.0",
         "guzzlehttp/guzzle": "^7.4",
         "irazasyed/telegram-bot-sdk": "^3.5",
