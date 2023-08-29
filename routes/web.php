@@ -18,3 +18,4 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/test', 'TelegramController@test');
+$router->post('/telegram', 'TelegramController@index');
