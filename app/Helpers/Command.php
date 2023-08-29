@@ -151,11 +151,11 @@ class Command
         return is_numeric($val)?(int)$val:$val;
     }
 
-    public static function chatGPT($message='')
+    public static function chatGPT($message='berapa pendapatan terakhir? -data')
     {         
         if ($message!='') {   
-            if (strpos($message, '--data') == true) {
-                $message = str_replace('--data','',$message);
+            if (strpos($message, '-data') == true) {
+                $message = str_replace('-data','',$message);
                 $message .= " ".self::getData();
             } 
             $url        = "https://api.openai.com/v1/chat/completions";
