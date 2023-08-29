@@ -107,7 +107,7 @@ class Command
         Util::send('sendMessage', $parameters); // function description Below
     }
 
-    private static function getData()
+    public static function getData()
     {
         $client = new \Google_Client();
         $client->setApplicationName('Google Sheets API');
