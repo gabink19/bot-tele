@@ -331,12 +331,13 @@ class Command
         $response .= "https://rebahin.tv/film/ (Film sub indo)"."\n";
         $response .= "https://pahe.li/ (Film)"."\n";
         $response .= "https://37.49.229.132/lk21/ (Film sub indo)"."\n";
-        $response .= "https://www.beritamaju.com/ (NSFW)"."\n";
+        $response .= "https://unduhfilmhd.com/ (Film)"."\n";
+        $response .= "https://drive.seikel.workers.dev/0:/ (Film)"."\n";
+        $response .= "https://subsc.my.id/subtitles/ (subtitle)"."\n";
         $response .= "https://dema737ch.com/ (Doraemon)"."\n";
         $response .= "https://oploverz.best/ (Anime)"."\n";
         $response .= "https://mangaku.vip/ (Manga)"."\n";
         $response .= "https://www.ovagames.com/ (Game Bajakan)"."\n"."\n";
-        $response .= "https://drive.seikel.workers.dev/0:/(Film)"."\n"."\n";
         $response .= "Klo ada link mati, report aja ya.";
         return $response;
     }
