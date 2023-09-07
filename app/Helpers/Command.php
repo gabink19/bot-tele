@@ -5,8 +5,6 @@ namespace App\Helpers;
 use Carbon\Carbon as Carbon;
 use Exception;
 
-use Illuminate\Support\Facades\Log;
-
 class Command
 {
     public function __construct() 
@@ -93,13 +91,7 @@ class Command
                 return self::mauLoker();
                 break;
             case "25" : 
-                return self::mauReview();
-                break;
-            case "26" : 
                 return self::mauJadiKutipan();
-                break;
-            case "27" : 
-                return self::mauJadiGambar();
                 break;
             default :
                 "nothing";
@@ -207,10 +199,6 @@ class Command
             ],
             '/mauLoker' => [
                 'deskripsi' => 'Menampilkan 5 Loker Terbaru (Salary>15jt)',
-                'type' => 'text'
-            ],
-            '/mauReview' => [
-                'deskripsi' => 'Menampilkan 5 Review SPE Terbaru',
                 'type' => 'text'
             ]
         ];
@@ -327,19 +315,7 @@ class Command
 
     public static function mauGabut() 
     {
-        $response = "Pilih sendiri cuy mau gabut dimana :"."\n";
-        $response .= "https://rebahin.tv/film/ (Film sub indo)"."\n";
-        $response .= "https://pahe.li/ (Film)"."\n";
-        $response .= "https://37.49.229.132/lk21/ (Film sub indo)"."\n";
-        $response .= "https://unduhfilmhd.com/ (Film)"."\n";
-        $response .= "https://drive.seikel.workers.dev/0:/ (Film)"."\n";
-        $response .= "https://subsc.my.id/subtitles/ (subtitle)"."\n";
-        $response .= "https://dema737ch.com/ (Doraemon)"."\n";
-        $response .= "https://oploverz.best/ (Anime)"."\n";
-        $response .= "https://mangaku.vip/ (Manga)"."\n";
-        $response .= "https://www.ovagames.com/ (Game Bajakan)"."\n"."\n";
-        $response .= "Klo ada link mati, report aja ya.";
-        return $response;
+        return 'http://104.237.198.197/';
     }
 
     public static function mauCrypto() 
@@ -354,12 +330,9 @@ class Command
         $data = Util::getHargaCrypto();
         $data = json_decode($data, true);
         $response = "Informasi Crypto hari ini :\n\n";
-        Log::info('list_crypto: '.json_encode($data));
-        if (isset($data['payload'])) {
-            foreach($data['payload'] as $key => $value) {
-                if (array_key_exists($value['pair'], $list_crypto))
-                    $response .= $list_crypto[$value['pair']]." : Rp. ". Util::format_number($value['latestPrice'])." (".Util::checkPositifNumber($value['day'])."%)\n";
-            }
+        foreach($data['payload'] as $key => $value) {
+            if (array_key_exists($value['pair'], $list_crypto))
+                $response .= $list_crypto[$value['pair']]." : Rp. ". Util::format_number($value['latestPrice'])." (".Util::checkPositifNumber($value['day'])."%)\n";
         }
         return $response;
     }
@@ -427,7 +400,6 @@ class Command
             if ($detik > 0)
                 $waktuTerbilang .= $detik . ' detik';
             return $waktuTerbilang. " lagi cuy";
-            // return 'html';
         }
     }
 
@@ -529,13 +501,12 @@ class Command
 
     public static function mauLibur() 
     {
-        $bulan_ini = date("Ym");
+        $bulan_ini = date("Y-m");
         $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
-
         $output = [];
         foreach($array as $key => $value) {
             if (strpos($key, $bulan_ini) !== false) {
-                $output[] = "(".substr($key, 0, 4)."-".substr($key, 4, 2)."-".substr($key, 6, 2).") ".$value['deskripsi'];
+                $output[] = "(".$key.") ".$value['summary'][0];
             }
         }
 
@@ -552,14 +523,14 @@ class Command
     public static function mauLiburan()
     {
         try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', 'https://api.unsplash.com/photos/random?client_id=Ff1Ep2lLgcuTmf9rUEAMd9Dtya8HerwBBYkW0wH2Qsw&query=vacation');
             $rng = mt_rand(1, 100);
             $randpik = mt_rand(1,2);
             $rngArray = array(1,2,3,4,5,6,7,8,9,10);
             if (in_array($rng, $rngArray)) {
                 return "https://radmed.co.id/dokter%20".$randpik.".jpg";
             }else{
-                $client = new \GuzzleHttp\Client();
-                $response = $client->request('GET', 'https://api.unsplash.com/photos/random?client_id=Ff1Ep2lLgcuTmf9rUEAMd9Dtya8HerwBBYkW0wH2Qsw&query=vacation');
                 return json_decode($response->getBody()->getContents(), true)['urls']['small'];
             }
 
@@ -743,7 +714,7 @@ class Command
         $response = "- Tahun 2020 : 20 Januari 2020 \n";
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
-        $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 27 April 2023 (10%) \n";
+        $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & ?? ?? 2023 (10%) \n";
 
         return $response;
     }
@@ -786,16 +757,19 @@ class Command
     public static function mauTanggalMerah()
     {
         $tahun_ini = date('Y');
-        $hari_ini = date('md');
+        $bulan_ini = (int)date('m');
         $liburtahunini = [];
         $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
         $skip = ['Hari Kartini','Hari Ibu','Hari Ayah','Hari Batik'];
         foreach ($array as $key => $value) {
             $substr = substr($key, 0,4);
-            $substrtgl = substr($key, 5,8);
-            if ($substr==$tahun_ini && !Util::isWeekend($key) && !in_array($value['deskripsi'], $skip) && $substrtgl>=$hari_ini) {
+            $substr_bln = (int)substr($key, 5,2);
+            if ($substr_bln<$bulan_ini) {
+                continue;
+            }
+            if ($substr==$tahun_ini && !Util::isWeekend($key) && !in_array($value['summary'][0], $skip)) {
                 $hari = Util::cek_hari(date('D',strtotime($key)));
-                $output[] = "[".$hari.", ".date("d M Y",strtotime($key))."] ".$value['deskripsi'];
+                $output[] = "[".$hari.", ".date("d M Y",strtotime($key))."] ".$value['summary'][0];
             }
         }
         $response = "Informasi Tanggal Merah Tahun ini di hari kerja :\n\n";
@@ -924,7 +898,7 @@ class Command
         return "Format Reminder : /mauReminder {d/m/Y_H:i} {pesan reminder}";
     }
 
-    public static function mauLoker($message='',$limit=10)
+    public static function mauLoker($message='backend engineer',$limit=10)
     {   
         try {
             $now    = date('Hi');
@@ -1024,11 +998,8 @@ class Command
 
     public static function mauJadiKutipan($message='ASSALAMUALAIKUM TI GUYS',$userID='1243421652',$nama='XX')
     {
-        Log::info('----mauJadiKutipan----');
         $words = explode(" ", $message);
         if (count($words) < 3 || count($words) > 15) {
-            Log::info('count words: '.count($words));
-            Log::info('----mauJadiKutipan----');
             return '';
         }
         try {
@@ -1038,7 +1009,7 @@ class Command
             $uniq = uniqid();
             putenv("PATH=/home/system_user/bin:/home/system_user/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/system_user/.composer/vendor/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin:/usr/local/go/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin");
 
-            $command = shell_exec("bash /var/www/html/radmed.co.id/bot-tele/quote-maker/run.sh $nama $message $userID $uniq 2>&1");
+            $command = shell_exec("/var/www/html/radmed.co.id/bot-tele/quote-maker/run.sh $nama $message $userID $uniq 2>&1");
             // if ($command === null) {
             //     $error = error_get_last();
             //     echo "Error: " . $error['message'];
@@ -1053,107 +1024,10 @@ class Command
             // } else {
             //     echo $command;
             // }
-            sleep(1);
-            if(file_exists(base_path()."/public/quote/".$uniq.".png") === FALSE) { Log::info('pic not found: '.base_path()."/quote/".$uniq.".png"); return ''; }
-            Log::info('----mauJadiKutipan----');
             return "https://radmed.co.id/bot-tele/public/quote/".$uniq.".png";
         } catch (Exception $e) {
         }
-        Log::info('general error');
         
         return '';
-        Log::info('----mauJadiKutipan----');
-    }
-
-    public static function mautest($value='')
-    {
-        $keyboard = [
-            'inline_keyboard' => [
-                [
-                    ['text' => 'Programmer', 'callback_data' => '/maulowongan Programmer'],
-                    ['text' => 'Backend Developer', 'callback_data' => '/maulowongan Backend'],
-                    ['text' => 'Admin', 'callback_data' => '/maulowongan Admin'],
-                    ['text' => 'Kurir', 'callback_data' => '/maulowongan Kurir']
-                ]
-            ]
-        ];
-        $encodedKeyboard = json_encode($keyboard);
-        $parameters = 
-            array(
-                'chat_id' => env('TELEGRAM_CHAT_ID'), 
-                'text' => 'Silahkan Pilih Pekerjaannya :', 
-                'reply_markup' => $encodedKeyboard
-            );
-
-        Util::send('sendMessage', $parameters); // function description Below
-    }
-
-    public static function mauJadiGambar($message='ronaldo dan messi pelukan')
-    {         
-        if ($message!='') {   
-            $url        = "https://api.openai.com/v1/images/generations";
-            $authorization = "Authorization: Bearer ".env("TOKEN_GPT");
-            $payload    = '{
-                                "prompt" : "'.$message.'",
-                                "n":1,
-                                "size":"256x256",
-                                "response_format":"url"
-                            }';
-            Log::info('----mauJadiGambar----');
-            $ch         = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',$authorization));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result     = curl_exec($ch);
-            if (curl_errno($ch)) {
-                $error_msg = curl_error($ch);
-                Log::info('error:'.json_encode($error_msg,true));
-            }
-            Log::info('result: '.$result);
-            $result     = json_decode($result, true);
-            curl_close ($ch);
-            Log::info('----mauJadiGambar----');
-        }
-
-        return (isset($result['data'][0]['url']))?$result['data'][0]['url']:"";
-    }
-
-    public static function mauReview()
-    {
-        $response = "Menampilkan 5 Review terbaru SPE :\n\n";
-        
-        $url        = "https://api-js.prod.companyreview.co/companies/1284069/company-reviews?page=1&sort=";
-        $ch         = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','X-Country-Iso: id'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result     = curl_exec($ch);
-        if (curl_errno($ch)) {
-            $error_msg = curl_error($ch);
-        }
-        $result  = json_decode($result, true);
-        curl_close ($ch);
-        
-        $no = 1;
-        if (isset($result['data']) && !empty($result)) {
-            foreach($result['data'] as $k => $v){
-                $response .= "<b>".$no.". ".$v['review_title']." (".date('d-M-Y',strtotime($v['created_at'])).")</b>"."\n";
-                $response .= "   - Rating (Company Overall) : ".$v['rating']['company_overall']." bintang"."\n";
-                $response .= "   - Job Title : ".$v['job_title']."\n";
-                $response .= "   - Pros Comment : ".$v['pros']."\n";
-                $response .= "   - Cons Comment : ".$v['cons']."\n\n";
-                $no++;
-                if($no>5){
-                    break;
-                }
-            }
-        }else{
-            $response .= "Sepertinya error.";
-        }
-
-        return $response;
     }
 }

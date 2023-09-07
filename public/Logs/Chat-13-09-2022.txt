@@ -1,1 +1,0 @@
-{"update_id":296918207,"message":{"message_id":101484,"from":{"id":396647467,"is_bot":false,"first_name":"Septiadi","username":"septiadirahmawan","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1663068919,"text":"jawab vin \"iya sayang\""}},

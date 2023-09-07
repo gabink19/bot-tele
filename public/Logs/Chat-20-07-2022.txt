@@ -1,1 +1,0 @@
-{"update_id":296911007,"message":{"message_id":93935,"from":{"id":1345374305,"is_bot":false,"first_name":"Mochamad Gibran","last_name":"M","username":"gibran1905"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1658323587,"text":"weh ngx ngalahin rng?"}},

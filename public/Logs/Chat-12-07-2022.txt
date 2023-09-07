@@ -1,1 +1,0 @@
-{"update_id":296909379,"message":{"message_id":91978,"from":{"id":1345374305,"is_bot":false,"first_name":"Mochamad Gibran","last_name":"M","username":"gibran1905"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1657632780,"text":"tuker tambah tuh sama kevin"}},

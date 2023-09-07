@@ -1,1 +1,0 @@
-{"update_id":296908604,"message":{"message_id":91143,"from":{"id":1243421652,"is_bot":false,"first_name":"Kevin","last_name":"Sunarsa","username":"kevin_sunarsa","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1657197281,"text":"Skip skip"}},

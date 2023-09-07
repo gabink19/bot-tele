@@ -1,1 +1,0 @@
-{"update_id":296922312,"message":{"message_id":105927,"from":{"id":396647467,"is_bot":false,"first_name":"Septiadi","username":"septiadirahmawan","language_code":"en"},"chat":{"id":-1001453463295,"title":"Sementara The Sibukers - we don't love bug","type":"supergroup"},"date":1666609959,"text":"\/mauliburan","entities":[{"offset":0,"length":11,"type":"bot_command"}]}},
