@@ -1103,7 +1103,7 @@ class Command
         $result  = json_decode($result, true);
         curl_close ($ch);
         if (isset($error_msg)) {
-            return $error_msg;
+            return json_encode($error_msg);
         }
         if (isset($result['success'])) {
             if ($result['success']=='true') {
