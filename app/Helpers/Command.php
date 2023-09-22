@@ -1100,11 +1100,18 @@ class Command
         if (curl_errno($ch)) {
             $error_msg = curl_error($ch);
         }
-        // $result  = json_decode($result, true);
+        $result  = json_decode($result, true);
         curl_close ($ch);
         if (isset($error_msg)) {
             return $error_msg;
         }
-        return $result;
+        if (isset($result['success'])) {
+            if ($result['success']=='true') {
+                $resp = $result['message']."\n";
+                $resp .= "Account Name : ". $result['data']['account_name']."\n";
+                return $resp;
+            }
+        }
+        return $result['message'];
     }
 }
