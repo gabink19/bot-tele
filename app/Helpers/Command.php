@@ -1111,7 +1111,8 @@ class Command
                 $resp .= "Account Name : ". $result['data']['account_name']."\n";
                 return $resp;
             }
+        }else{
+            return json_encode($result);
         }
-        return $result['message'];
     }
 }
