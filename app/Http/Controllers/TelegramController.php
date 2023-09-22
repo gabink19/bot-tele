@@ -75,7 +75,16 @@ class TelegramController extends Controller
                     $pesan = str_replace("/mauCekNamaRekening", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauCekNamaRekening(ltrim($pesan));
-                    $is_send = true;
+                    
+                    $data['reply_to_message_id'] = $reply_to_message_id;
+                    $data['text'] = $response;
+                    Util::sendMessageHTML($data,$chatId);
+                    echo response()->json([
+                        'status' => 'ok',
+                        'data' => $data,
+                        'message' => 'Send success'
+                    ], 200);
+                    die();
                 }else if (strpos(strtolower($message), "/mauloker") !== false) {
                     $pesan = str_replace("/mauloker", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
