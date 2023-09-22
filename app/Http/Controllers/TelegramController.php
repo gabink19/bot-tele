@@ -76,13 +76,13 @@ class TelegramController extends Controller
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauCekNamaRekening(ltrim($pesan));
                     
-        try {
-            $fh = fopen("Logs/"."Data-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-            fwrite($fh, date('H:i:s :').json_encode($response).",\r\n");
-            fclose($fh);
-        } catch (\Exception $e) {
-            
-        }
+                    try {
+                        $fh = fopen("Logs/"."Data-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                        fwrite($fh, date('H:i:s :').json_encode($response).",\r\n");
+                        fclose($fh);
+                    } catch (\Exception $e) {
+                        
+                    }
                     $data['reply_to_message_id'] = $reply_to_message_id;
                     $data['text'] = $response;
                     Util::sendMessageHTML($data,$chatId);
