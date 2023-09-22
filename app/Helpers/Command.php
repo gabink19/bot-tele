@@ -1084,7 +1084,7 @@ class Command
         }
 
         $exp = explode('-',$message);
-        if ((!isset($exp[0]) || !isset($exp[1])) && ($exp[0]=='' && $exp[1]=='')) {
+        if (!isset($exp[0]) || !isset($exp[1])) {
             return $msg;
         }
 
@@ -1100,7 +1100,7 @@ class Command
         if (curl_errno($ch)) {
             $error_msg = curl_error($ch);
         }
-        $result  = json_decode($result, true);
+        // $result  = json_decode($result, true);
         curl_close ($ch);
         if (isset($error_msg)) {
             return $error_msg;
