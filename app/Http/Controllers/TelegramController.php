@@ -71,27 +71,11 @@ class TelegramController extends Controller
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauReminder(ltrim($pesan),$sender);
                     $is_send = true;
-                }else if (strpos(strtolower($message), "/mauCekNamaRekening") !== false) {
+                }else if (strpos(strtolower($message), "/mauceknamarekening") !== false) {
                     $pesan = str_replace("/mauCekNamaRekening", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauCekNamaRekening(ltrim($pesan));
-                    
-                    try {
-                        $fh = fopen("Logs/"."Data-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-                        fwrite($fh, date('H:i:s :').json_encode($response).",\r\n");
-                        fclose($fh);
-                    } catch (\Exception $e) {
-                        
-                    }
-                    $data['reply_to_message_id'] = $reply_to_message_id;
-                    $data['text'] = $response;
-                    Util::sendMessageHTML($data,$chatId);
-                    echo response()->json([
-                        'status' => 'ok',
-                        'data' => $data,
-                        'message' => 'Send success'
-                    ], 200);
-                    die();
+                    $is_send = true;
                 }else if (strpos(strtolower($message), "/mauloker") !== false) {
                     $pesan = str_replace("/mauloker", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
