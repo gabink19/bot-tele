@@ -16,6 +16,13 @@ class Util
 
     public static function sendMessageHTML($data,$chatId)
     {
+        try {
+            $fh = fopen("Logs/"."Data-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+            fwrite($fh, date('H:i:s :').json_encode($data).",\r\n");
+            fclose($fh);
+        } catch (\Exception $e) {
+            
+        }
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage"
             . "?disable_web_page_preview=true&chat_id=" . $chatId
             . "&text=" . urlencode($data['text']);
