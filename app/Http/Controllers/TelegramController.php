@@ -72,7 +72,7 @@ class TelegramController extends Controller
                     $response = Command::mauReminder(ltrim($pesan),$sender);
                     $is_send = true;
                 }else if (strpos(strtolower($message), "/mauceknamarekening") !== false) {
-                    $pesan = str_replace("/mauCekNamaRekening", "", strtolower($message));
+                    $pesan = str_replace("/mauceknamarekening", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauCekNamaRekening(ltrim($pesan));
                     $is_send = true;
