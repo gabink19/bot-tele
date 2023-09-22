@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Carbon\Carbon as Carbon;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class Command
 {
