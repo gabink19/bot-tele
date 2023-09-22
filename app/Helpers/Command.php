@@ -1053,31 +1053,7 @@ class Command
     public static function mauCekNamaRekening($message='bca-6801050058')
     {
         $msg = "Format Cek Rekening : /mauCekNamaRekening {kodebank}-{rekening}\n\n";
-        $msg .= "----Kode - BANK----\n
-        bca - BCA\n
-        mandiri - Mandiri\n
-        bni - BNI\n
-        bri - BRI\n
-        bsm - BSI (Bank Syariah Indonesia)\n
-        bca_syr - BCA Syariah\n
-        btn - BTN/BTN Syariah\n
-        cimb - CIMB Niaga / CIMB Niaga Syariah\n
-        dbs - DBS Indonesia\n
-        btpn - BTPN / Jenius\n
-        artos - Bank Jago\n
-        kesejahteraan_ekonomi - Seabank/Bank BKE\n
-        danamon - Danamon / Danamon Syariah\n
-        muamalat - Muamalat\n
-        hana - LINE Bank/KEB Hana\n
-        royal - Blu/BCA Digital\n
-        nationalnobu - Nobu Bank\n
-        \n
-        ----Kode - E-Wallet----\n
-        ovo - OVO\n
-        dana - Dana\n
-        linkaja - LinkAja\n
-        gopay - GoPay\n
-        shopeepay - ShopeePay";
+        $msg .= "----Kode - BANK----\nbca - BCA\nmandiri - Mandiri\nbni - BNI\nbri - BRI\nbsm - BSI (Bank Syariah Indonesia)\nbca_syr - BCA Syariah\nbtn - BTN/BTN Syariah\ncimb - CIMB Niaga / CIMB Niaga Syariah\ndbs - DBS Indonesia\nbtpn - BTPN / Jenius\nartos - Bank Jago\nkesejahteraan_ekonomi - Seabank/Bank BKE\ndanamon - Danamon / Danamon Syariah\nmuamalat - Muamalat\nhana - LINE Bank/KEB Hana\nroyal - Blu/BCA Digital\nnationalnobu - Nobu Bank\n\n----Kode - E-Wallet----\novo - OVO\ndana - Dana\nlinkaja - LinkAja\ngopay - GoPay\nshopeepay - ShopeePay";
 
         if ($message=='') {
             return $msg;
