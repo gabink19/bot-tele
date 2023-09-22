@@ -1080,12 +1080,12 @@ class Command
         shopeepay - ShopeePay";
 
         if ($message=='') {
-            return $msg;
+            return json_encode($msg."0");
         }
 
         $exp = explode('-',$message);
         if (!isset($exp[0]) || !isset($exp[1])) {
-            return $msg;
+            return json_encode($msg."1");
         }
 
         $url        = "https://cekrek.netovas.com/api/account-inquiry";
@@ -1103,16 +1103,16 @@ class Command
         $result  = json_decode($result, true);
         curl_close ($ch);
         if (isset($error_msg)) {
-            return json_encode($error_msg);
+            return json_encode($error_msg."2");
         }
         if (isset($result['success'])) {
             if ($result['success']=='true') {
                 $resp = $result['message']."\n";
                 $resp .= "Account Name : ". $result['data']['account_name']."\n";
-                return $resp;
+                return json_encode($resp."3");
             }
         }else{
-            return json_encode($result);
+            return json_encode($result."4");
         }
     }
 }
