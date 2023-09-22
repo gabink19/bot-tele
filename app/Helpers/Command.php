@@ -1081,6 +1081,8 @@ class Command
         if (isset($error_msg)) {
             return json_encode($error_msg);
         }
+        Log::debug($url." - ".$payload);
+        Log::debug(json_encode($result));
         if (isset($result['success'])) {
             if ($result['success']=='true') {
                 $resp = $result['message']."\n";
