@@ -93,6 +93,9 @@ class Command
             case "25" : 
                 return self::mauJadiKutipan();
                 break;
+            case "26" : 
+                return self::mauCekNamaRekening();
+                break;
             default :
                 "nothing";
             }
@@ -199,6 +202,10 @@ class Command
             ],
             '/mauLoker' => [
                 'deskripsi' => 'Menampilkan 5 Loker Terbaru (Salary>15jt)',
+                'type' => 'text'
+            ],
+            '/mauCekNamaRekening' => [
+                'deskripsi' => 'Cek Nama dari pemiliki rekening bank atau e-wallet.',
                 'type' => 'text'
             ]
         ];
@@ -1041,5 +1048,63 @@ class Command
         }
         
         return '';
+    }
+    
+    public static function mauCekNamaRekening($message='bca-6801050058')
+    {
+        $msg = "Format Cek Rekening : /mauCekNamaRekening {kodebank}-{rekening}\n\n";
+        $msg .= "----Kode - BANK----\n
+        bca - BCA\n
+        mandiri - Mandiri\n
+        bni - BNI\n
+        bri - BRI\n
+        bsm - BSI (Bank Syariah Indonesia)\n
+        bca_syr - BCA Syariah\n
+        btn - BTN/BTN Syariah\n
+        cimb - CIMB Niaga / CIMB Niaga Syariah\n
+        dbs - DBS Indonesia\n
+        btpn - BTPN / Jenius\n
+        artos - Bank Jago\n
+        kesejahteraan_ekonomi - Seabank/Bank BKE\n
+        danamon - Danamon / Danamon Syariah\n
+        muamalat - Muamalat\n
+        hana - LINE Bank/KEB Hana\n
+        royal - Blu/BCA Digital\n
+        nationalnobu - Nobu Bank\n
+        \n
+        ----Kode - E-Wallet----\n
+        ovo - OVO\n
+        dana - Dana\n
+        linkaja - LinkAja\n
+        gopay - GoPay\n
+        shopeepay - ShopeePay";
+
+        if ($message=='') {
+            return $msg;
+        }
+
+        $exp = explode('-',$message);
+        if ((!isset($exp[0]) || !isset($exp[1])) && ($exp[0]=='' && $exp[1]=='')) {
+            return $msg;
+        }
+
+        $url        = "https://cekrek.netovas.com/api/account-inquiry";
+        $payload    = 'accountBank='.$exp[0].'&accountNumber='.$exp[1];
+        $ch         = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result     = curl_exec($ch);
+        if (curl_errno($ch)) {
+            $error_msg = curl_error($ch);
+        }
+        $result  = json_decode($result, true);
+        curl_close ($ch);
+        if (isset($error_msg)) {
+            return $error_msg;
+        }
+        return $result;
     }
 }

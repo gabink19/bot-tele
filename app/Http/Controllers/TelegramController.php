@@ -71,6 +71,11 @@ class TelegramController extends Controller
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
                     $response = Command::mauReminder(ltrim($pesan),$sender);
                     $is_send = true;
+                }else if (strpos(strtolower($message), "/mauCekNamaRekening") !== false) {
+                    $pesan = str_replace("/mauCekNamaRekening", "", strtolower($message));
+                    $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
+                    $response = Command::mauCekNamaRekening(ltrim($pesan));
+                    $is_send = true;
                 }else if (strpos(strtolower($message), "/mauloker") !== false) {
                     $pesan = str_replace("/mauloker", "", strtolower($message));
                     $pesan = str_replace("@dewagabutbot", "", strtolower($pesan));
@@ -214,7 +219,7 @@ class TelegramController extends Controller
 
     public function test()
     {
-        echo '<img src="'.Command::mauJadiGambar().'" alt="Girl in a jacket" width="500" height="600">';
+        echo Command::mauCekNamaRekening();
     }
     public function testgaji()
     {
