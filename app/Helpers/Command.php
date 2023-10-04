@@ -1058,7 +1058,7 @@ class Command
         return '';
     }
     
-    public static function mauCekNamaRekening($message='bca-6801050058')
+    public static function mauCekNamaRekening()
     {
         $msg = "Format Cek Rekening : /mauCekNamaRekening {kodebank}-{rekening}\n\n";
         $msg .= "----Kode - BANK----\nbca - BCA\nmandiri - Mandiri\nbni - BNI\nbri - BRI\nbsm - BSI (Bank Syariah Indonesia)\nbca_syr - BCA Syariah\nbtn - BTN/BTN Syariah\ncimb - CIMB Niaga / CIMB Niaga Syariah\ndbs - DBS Indonesia\nbtpn - BTPN / Jenius\nartos - Bank Jago\nkesejahteraan_ekonomi - Seabank/Bank BKE\ndanamon - Danamon / Danamon Syariah\nmuamalat - Muamalat\nhana - LINE Bank/KEB Hana\nroyal - Blu/BCA Digital\nnationalnobu - Nobu Bank\n\n----Kode - E-Wallet----\novo - OVO\ndana - Dana\nlinkaja - LinkAja\ngopay - GoPay\nshopeepay - ShopeePay";
