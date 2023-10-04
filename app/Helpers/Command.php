@@ -97,6 +97,9 @@ class Command
             case "26" : 
                 return self::mauCekNamaRekening();
                 break;
+            case "27" : 
+                return self::mauFaktaRandom();
+                break;
             default :
                 "nothing";
             }
@@ -207,6 +210,10 @@ class Command
             ],
             '/mauCekNamaRekening' => [
                 'deskripsi' => 'Cek Nama dari pemiliki rekening bank atau e-wallet.',
+                'type' => 'text'
+            ],
+            '/mauFaktaRandom' => [
+                'deskripsi' => 'Untuk mendapatkan fakta-fakta random.',
                 'type' => 'text'
             ]
         ];
@@ -1092,5 +1099,13 @@ class Command
             }
         }
         return $result['message'];
+    }
+    
+    public static function mauFaktaRandom()
+    {
+        $array = json_decode(file_get_contents("https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"), true);
+        $param = urlencode($array['text']);
+        $array = json_decode(file_get_contents("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=id&dt=t&q=".$param), true);
+        return "<b>".$array[0][0][0]."</b>";
     }
 }

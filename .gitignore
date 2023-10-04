@@ -7,4 +7,5 @@ Homestead.yaml
 /public/Logs/
 /public/quote/
 /quote-maker/.env
-
+/public/count.txt
+/public/countLoker.txt
