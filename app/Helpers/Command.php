@@ -853,46 +853,56 @@ class Command
     }
 
     public static function mauCurhat($message='')
-    {         
-        if ($message!='') {   
-            $url        = "https://api.openai.com/v1/chat/completions";
-            $authorization = "Authorization: Bearer ".env("TOKEN_GPT");
-            $payload    = '{
-                             "model": "gpt-3.5-turbo",
-                             "messages": [{"role": "user", "content": "'.$message.'"}] 
-                            }';
-            $ch         = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',$authorization));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result     = curl_exec($ch);
-            if (curl_errno($ch)) {
-                $error_msg = curl_error($ch);
-            }
-            $result     = json_decode($result, true);
-            curl_close ($ch);
+    {      
+        // Real ChatGPT   
+        // if ($message!='') {   
+        //     $url        = "https://api.openai.com/v1/chat/completions";
+        //     $authorization = "Authorization: Bearer ".env("TOKEN_GPT");
+        //     $payload    = '{
+        //                      "model": "gpt-3.5-turbo",
+        //                      "messages": [{"role": "user", "content": "'.$message.'"}] 
+        //                     }';
+        //     $ch         = curl_init();
+        //     curl_setopt($ch, CURLOPT_URL, $url);
+        //     curl_setopt($ch, CURLOPT_POST, 1);
+        //     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',$authorization));
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //     $result     = curl_exec($ch);
+        //     if (curl_errno($ch)) {
+        //         $error_msg = curl_error($ch);
+        //     }
+        //     $result     = json_decode($result, true);
+        //     curl_close ($ch);
+        // }
+
+        // if (isset($error_msg)) {
+        //     try {
+        //         $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+        //         fwrite($fh, json_encode($error_msg).",\r\n");
+        //         fclose($fh);
+        //     } catch (\Exception $e) {
+                
+        //     }
+        // }   
+        //     try {
+        //         $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+        //         fwrite($fh, json_encode($result).",\r\n");
+        //         fclose($fh);
+        //     } catch (\Exception $e) {
+                
+        //     }
+
+        // return (isset($result['choices'][0]['message']['content']))?$result['choices'][0]['message']['content']:"Sini Curhat....";
+        
+        //Chat GPT akuari
+        if ($message=='') { 
+            return "Sini Curhat....";
         }
-
-        if (isset($error_msg)) {
-            try {
-                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-                fwrite($fh, json_encode($error_msg).",\r\n");
-                fclose($fh);
-            } catch (\Exception $e) {
-                
-            }
-        }   
-            try {
-                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
-                fwrite($fh, json_encode($result).",\r\n");
-                fclose($fh);
-            } catch (\Exception $e) {
-                
-            }
-
-        return (isset($result['choices'][0]['message']['content']))?$result['choices'][0]['message']['content']:"Sini Curhat....";
+        $param = urlencode($message);
+        $array = json_decode(file_get_contents("https://api.akuari.my.id/ai/gpt?chat=".$param), true);
+        return $array["respon"];
+    
     }
 
     public static function mauReminder($message='',$sender='')
@@ -1107,9 +1117,7 @@ class Command
     
     public static function mauFaktaRandom()
     {
-        $array = json_decode(file_get_contents("https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"), true);
-        $param = urlencode($array['text']);
-        $array = json_decode(file_get_contents("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=id&dt=t&q=".$param), true);
-        return "***".$array[0][0][0]."***";
+        $array = json_decode(file_get_contents("https://api.akuari.my.id/randomtext/faktaunik"), true);
+        return "***".$array["hasil"]."***";
     }
 }
