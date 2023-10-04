@@ -208,6 +208,10 @@ class Command
                 'deskripsi' => 'Menampilkan 5 Loker Terbaru (Salary>15jt)',
                 'type' => 'text'
             ],
+            '/mauJadiKutipan' => [
+                'deskripsi' => 'Mengubah text menjadi gambar kutipan.',
+                'type' => 'text'
+            ],
             '/mauCekNamaRekening' => [
                 'deskripsi' => 'Cek Nama dari pemiliki rekening bank atau e-wallet.',
                 'type' => 'text'
