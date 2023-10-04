@@ -1106,6 +1106,6 @@ class Command
         $array = json_decode(file_get_contents("https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"), true);
         $param = urlencode($array['text']);
         $array = json_decode(file_get_contents("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=id&dt=t&q=".$param), true);
-        return "<b>".$array[0][0][0]."</b>";
+        return "***".$array[0][0][0]."***";
     }
 }
