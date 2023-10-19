@@ -335,12 +335,12 @@ class Command
     public static function mauGabut() 
     {
         $response = "Pilih sendiri cuy mau gabut dimana :"."\n";
-        $response .= "https://rebahin.tv/film/ (Film sub indo)"."\n";
+        $response .= "http://179.43.163.52/ (Film sub indo)"."\n";
         $response .= "https://pahe.li/ (Film)"."\n";
-        $response .= "https://37.49.229.132/lk21/ (Film sub indo)"."\n";
+        $response .= "https://tv1.lk21official.wiki/ (Film sub indo)"."\n";
         $response .= "https://unduhfilmhd.com/ (Film)"."\n";
         $response .= "https://drive.seikel.workers.dev/0:/ (Film)"."\n";
-        $response .= "https://subsc.my.id/subtitles/ (subtitle)"."\n";
+        $response .= "https://subsc.my.id/ (subtitle)"."\n";
         $response .= "https://dema737ch.com/ (Doraemon)"."\n";
         $response .= "https://oploverz.best/ (Anime)"."\n";
         $response .= "https://mangaku.vip/ (Manga)"."\n";
@@ -1118,6 +1118,6 @@ class Command
     public static function mauFaktaRandom()
     {
         $array = json_decode(file_get_contents("https://api.akuari.my.id/randomtext/faktaunik"), true);
-        return "***".$array["hasil"]."***";
+        return "<b>".$array["hasil"]."</b>";
     }
 }
