@@ -967,8 +967,7 @@ class Command
             https://www.jobstreet.co.id/api/chalice-search/v4/search?siteKey=ID-Main&sourcesystem=houston&userqueryid=28430507083827b0ff41fa0e24ac0005-1463615&userid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&usersessionid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&eventCaptureSessionId=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&page=1&seekSelectAllPages=true&classification=6281&subclassification=6290,6287,6302&salarytype=monthly&salaryrange=10000000-&pageSize=100&include=seodata&locale=id-ID&solId=6891072a-6a24-407d-8e4b-a8852934d6bf";
             $ch         = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_POST, 0);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $result     = curl_exec($ch);
