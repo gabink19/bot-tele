@@ -961,32 +961,10 @@ class Command
             $message='Programmer';
         }
         $count = 1 ;
-        $response = "Menampilkan ".$limit." loker '$message' :\n\n";
+        $response = "Menampilkan ".$limit." :\n\n";
         for ($i=1; $i < 100; $i++) { 
-            $url        = "https://xapi.supercharge-srp.co/job-search/graphql?country=id&isSmartSearch=true";
-            $payload    = '{
-                            "query": "query getJobs($country: String, $locale: String, $keyword: String, $createdAt: String, $jobFunctions: [Int], $categories: [String], $locations: [Int], $careerLevels: [Int], $minSalary: Int, $maxSalary: Int, $salaryType: Int, $candidateSalary: Int, $candidateSalaryCurrency: String, $datePosted: Int, $jobTypes: [Int], $workTypes: [String], $industries: [Int], $page: Int, $pageSize: Int, $companyId: String, $advertiserId: String, $userAgent: String, $accNums: Int, $subAccount: Int, $minEdu: Int, $maxEdu: Int, $edus: [Int], $minExp: Int, $maxExp: Int, $seo: String, $searchFields: String, $candidateId: ID, $isDesktop: Boolean, $isCompanySearch: Boolean, $sort: String, $sVi: String, $duplicates: String, $flight: String, $solVisitorId: String) {\n  jobs(\n    country: $country\n    locale: $locale\n    keyword: $keyword\n    createdAt: $createdAt\n    jobFunctions: $jobFunctions\n    categories: $categories\n    locations: $locations\n    careerLevels: $careerLevels\n    minSalary: $minSalary\n    maxSalary: $maxSalary\n    salaryType: $salaryType\n    candidateSalary: $candidateSalary\n    candidateSalaryCurrency: $candidateSalaryCurrency\n    datePosted: $datePosted\n    jobTypes: $jobTypes\n    workTypes: $workTypes\n    industries: $industries\n    page: $page\n    pageSize: $pageSize\n    companyId: $companyId\n    advertiserId: $advertiserId\n    userAgent: $userAgent\n    accNums: $accNums\n    subAccount: $subAccount\n    minEdu: $minEdu\n    edus: $edus\n    maxEdu: $maxEdu\n    minExp: $minExp\n    maxExp: $maxExp\n    seo: $seo\n    searchFields: $searchFields\n    candidateId: $candidateId\n    isDesktop: $isDesktop\n    isCompanySearch: $isCompanySearch\n    sort: $sort\n    sVi: $sVi\n    duplicates: $duplicates\n    flight: $flight\n    solVisitorId: $solVisitorId\n  ) {\n    total\n    totalJobs\n  jobs {\n      id\n      adType\n      sourceCountryCode\n      isStandout\n      companyMeta {\n        id\n        advertiserId\n        isPrivate\n        name\n        logoUrl\n        slug\n      }\n      jobTitle\n      jobUrl\n      jobTitleSlug\n      description\n      employmentTypes {\n        code\n        name\n      }\n      sellingPoints\n      locations {\n        code\n        name\n        slug\n        children {\n          code\n          name\n          slug\n        }\n      }\n      categories {\n        code\n        name\n        children {\n          code\n          name\n        }\n      }\n      postingDuration\n      postedAt\n      salaryRange {\n        currency\n        max\n        min\n        period\n        term\n      }\n      salaryVisible\n      bannerUrl\n      isClassified\n      solMetadata\n    }\n  }\n}\n",
-                            "variables": {
-                                "keyword": "'.$message.'",
-                                "jobFunctions": [],
-                                "locations": [],
-                                "salaryType": 1,
-                                "jobTypes": [],
-                                "createdAt": null,
-                                "careerLevels": [],
-                                "page": '.$i.',
-                                "country": "id",
-                                "sVi": "[CS]v1|315A968201DFF6C2-6000161643DB195A[CE]",
-                                "solVisitorId": "6891072a-6a24-407d-8e4b-a8852934d6bf",
-                                "categories": [],
-                                "workTypes": [],
-                                "userAgent": "Mozilla/5.0%20(Windows%20NT%2010.0;%20Win64;%20x64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/112.0.0.0%20Safari/537.36",
-                                "industries": [],
-                                "sort": "createdAt",
-                                "minSalary": 10000000,
-                                "locale": "id"
-                            }
-                        }';
+            $url        = "
+            https://www.jobstreet.co.id/api/chalice-search/v4/search?siteKey=ID-Main&sourcesystem=houston&userqueryid=28430507083827b0ff41fa0e24ac0005-1463615&userid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&usersessionid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&eventCaptureSessionId=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&page=1&seekSelectAllPages=true&classification=6281&subclassification=6290,6287,6302&salarytype=monthly&salaryrange=10000000-&pageSize=100&include=seodata&locale=id-ID&solId=6891072a-6a24-407d-8e4b-a8852934d6bf";
             $ch         = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -1000,17 +978,18 @@ class Command
             $result  = json_decode($result, true);
             curl_close ($ch);
 
-            if (isset($result['data']['jobs']['jobs'])) {
-                foreach ($result['data']['jobs']['jobs'] as $key => $value) {
-                    if (isset($value['salaryRange']['max']) && $value['salaryRange']['max'] != null && $value['salaryRange']['max'] > 15000000) {
+            if (isset($result['data'])) {
+                foreach ($result['data'] as $key => $value) {
+                    if (isset($value['salary']) && $value['salary'] != "") {
                         if ($count>$limit) {
                             break;
                         }
-                        $response .= "<b>".$count.". ".$value['jobTitle']." (".$value['companyMeta']['name']." - ".$value['locations'][0]['name'].")</b>\n";
-                        $response .= "- Range Gaji : Rp. ".number_format($value['salaryRange']['min'],2,',','.')." - ".number_format($value['salaryRange']['max'],2,',','.')."\n";
-                        $response .= "- Tanggal Posting : ".date('d-M-Y H:i',strtotime($value['postedAt']))."\n";
-                        $response .= "- Tipe Kerja : ".$value['employmentTypes'][0]['name']."\n";
-                        $response .= "- Link : ".$value['jobUrl']."\n";
+                        $response .= "<b>".$count.". ".$value['title']." (".$value['companyName']." - ".$value['locations'].")</b>\n";
+                        $response .= "- Gaji : ".$value['salary']."\n";
+                        $response .= "- Tanggal Posting : ".date('d-M-Y H:i',strtotime($value['listingDate']))."\n";
+                        $response .= "- Tipe Kerja : ".$value['workType']."\n";
+                        $response .= "- Teaser : ".$value['teaser']."\n";
+                        $response .= "- Link : https://www.jobstreet.co.id/id/job/".$value['id']."\n";
                         $count++;
                     }
                 }
