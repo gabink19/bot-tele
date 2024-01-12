@@ -753,7 +753,7 @@ class Command
     public static function mauSholat()
     {
         $date = date("Y/m/d");
-        $url = "https://api.myquran.com/v1/sholat/jadwal/1107/".$date;
+        $url = "https://api.myquran.com/v2/sholat/jadwal/1107/".$date;
         $client = new \GuzzleHttp\Client();
         $resp = $client->request('GET', $url);
         $data = json_decode($resp->getBody()->getContents(), true);
@@ -769,7 +769,7 @@ class Command
         $response .= "Isya : ".$data['data']['jadwal']['isya']."\n\n";
 
 
-        $url = "https://api.myquran.com/v1/sholat/jadwal/1108/".$date;
+        $url = "https://api.myquran.com/v2/sholat/jadwal/1108/".$date;
         $client = new \GuzzleHttp\Client();
         $resp1 = $client->request('GET', $url);
         $data = json_decode($resp1->getBody()->getContents(), true);
