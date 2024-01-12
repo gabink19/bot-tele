@@ -941,22 +941,22 @@ class Command
 
     public static function mauLoker($message='backend engineer',$limit=10)
     {   
-        try {
-            $now    = date('Hi');
-            $max  = $now;
-            $fh_res = fopen("countLoker.txt", 'r') or die("Unable to open file!");
-            $read   = fread($fh_res,filesize("countLoker.txt"));
-            if ($read==$max) {
-                return "/mauLoker hanya bisa di hit 1 menit sekali.";
-            }
+        // try {
+        //     $now    = date('Hi');
+        //     $max  = $now;
+        //     $fh_res = fopen("countLoker.txt", 'r') or die("Unable to open file!");
+        //     $read   = fread($fh_res,filesize("countLoker.txt"));
+        //     if ($read==$max) {
+        //         return "/mauLoker hanya bisa di hit 1 menit sekali.";
+        //     }
 
-            $fh = fopen("countLoker.txt", "w") or die("Unable to open file!");;
-            fwrite($fh, $max);
-            fclose($fh);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+        //     $fh = fopen("countLoker.txt", "w") or die("Unable to open file!");;
+        //     fwrite($fh, $max);
+        //     fclose($fh);
+        // } catch (\Exception $e) {
+        //     throw new \Exception($e->getMessage());
             
-        }
+        // }
         if($message==''){
             $message='Programmer';
         }
