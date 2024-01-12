@@ -941,59 +941,42 @@ class Command
 
     public static function mauLoker($message='backend engineer',$limit=10)
     {   
-        // try {
-        //     $now    = date('Hi');
-        //     $max  = $now;
-        //     $fh_res = fopen("countLoker.txt", 'r') or die("Unable to open file!");
-        //     $read   = fread($fh_res,filesize("countLoker.txt"));
-        //     if ($read==$max) {
-        //         return "/mauLoker hanya bisa di hit 1 menit sekali.";
-        //     }
-
-        //     $fh = fopen("countLoker.txt", "w") or die("Unable to open file!");;
-        //     fwrite($fh, $max);
-        //     fclose($fh);
-        // } catch (\Exception $e) {
-        //     throw new \Exception($e->getMessage());
-            
-        // }
         if($message==''){
             $message='Programmer';
         }
         $count = 1 ;
         $response = "Menampilkan ".$limit." :\n\n";
-        for ($i=1; $i < 100; $i++) { 
-            $url        = "
-            https://www.jobstreet.co.id/api/chalice-search/v4/search?siteKey=ID-Main&sourcesystem=houston&userqueryid=28430507083827b0ff41fa0e24ac0005-1463615&userid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&usersessionid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&eventCaptureSessionId=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&page=1&seekSelectAllPages=true&classification=6281&subclassification=6290,6287,6302&salarytype=monthly&salaryrange=10000000-&pageSize=100&include=seodata&locale=id-ID&solId=6891072a-6a24-407d-8e4b-a8852934d6bf";
-            $ch         = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result     = curl_exec($ch);
-            if (curl_errno($ch)) {
-                $error_msg = curl_error($ch);
-            }
-            $result  = json_decode($result, true);
-            curl_close ($ch);
+        
+        $url = "https://www.jobstreet.co.id/api/chalice-search/v4/search?siteKey=ID-Main&sourcesystem=houston&userqueryid=28430507083827b0ff41fa0e24ac0005-1463615&userid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&usersessionid=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&eventCaptureSessionId=48e349f3-4193-44a1-9a8a-a9d1c3c219b0&page=1&seekSelectAllPages=true&classification=6281&subclassification=6290,6287,6302&salarytype=monthly&salaryrange=10000000-&pageSize=100&include=seodata&locale=id-ID&solId=6891072a-6a24-407d-8e4b-a8852934d6bf";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            if (isset($result['data'])) {
-                foreach ($result['data'] as $key => $value) {
-                    if (isset($value['salary']) && $value['salary'] != "") {
-                        if ($count>$limit) {
-                            break;
-                        }
-                        $response .= "<b>".$count.". ".$value['title']." (".$value['companyName']." - ".$value['locations'].")</b>\n";
-                        $response .= "- Gaji : ".$value['salary']."\n";
-                        $response .= "- Tanggal Posting : ".date('d-M-Y H:i',strtotime($value['listingDate']))."\n";
-                        $response .= "- Tipe Kerja : ".$value['workType']."\n";
-                        $response .= "- Teaser : ".$value['teaser']."\n";
-                        $response .= "- Link : https://www.jobstreet.co.id/id/job/".$value['id']."\n";
-                        $count++;
+        $result = curl_exec($ch);
+        $result  = json_decode($result, true);
+
+        if (curl_errno($ch)) {
+            echo 'Error: ' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        if (isset($result['data'])) {
+            foreach ($result['data'] as $key => $value) {
+                if (isset($value['salary']) && $value['salary'] != "") {
+                    if ($count>$limit) {
+                        break;
                     }
+                    $company = $value['advertiser']['description'];
+                    if (isset($value['companyName'])) {
+                        $company = $value['companyName'];
+                    }
+                    $response .= "<b>".$count.". ".$value['title']." (".$company." - ".$value['location'].")</b>\n";
+                    $response .= "- Gaji : ".$value['salary']."\n";
+                    $response .= "- Tanggal Posting : ".date('d-M-Y H:i',strtotime($value['listingDate']))."\n";
+                    $response .= "- Tipe Kerja : ".$value['workType']."\n";
+                    $response .= "- Teaser : ".$value['teaser']."\n";
+                    $response .= "- Link : https://www.jobstreet.co.id/id/job/".$value['id']."\n";
+                    $count++;
                 }
-            }else{
-                break;
             }
         }
         

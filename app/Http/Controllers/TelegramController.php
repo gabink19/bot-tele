@@ -219,7 +219,7 @@ class TelegramController extends Controller
 
     public function test()
     {
-        echo Command::mauSholat();
+        echo Command::mauLoker();
     }
     public function testgaji()
     {
