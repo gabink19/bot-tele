@@ -736,7 +736,8 @@ class Command
         }
         $response .= "- Tahun 2021 : 30 April 2021 \n";
         $response .= "- Tahun 2022 : 14 April 2022 \n";
-        $response .= "- Tahun 2023 : 6 April 2023 ".$add." \n";
+        $response .= "- Tahun 2023 : 6 April 2023 \n";
+        $response .= "- Tahun 2024 : ?? Maret 2024 \n";
         return $response;
     }
 
@@ -745,7 +746,8 @@ class Command
         $response = "- Tahun 2020 : 20 Januari 2020 \n";
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
-        $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & ?? ?? 2023 (10%) \n";
+        $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 25 Mei 2023 (10%) \n";
+        $response .= "- Tahun 2024 : ?? Februari 2024 (100% ?)\n";
 
         return $response;
     }
@@ -1011,14 +1013,14 @@ class Command
             $uniq = uniqid();
             putenv("PATH=/home/system_user/bin:/home/system_user/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/system_user/.composer/vendor/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin:/usr/local/go/bin:/usr/local/go/bin:/home/system_user/.local/bin:/home/system_user/bin");
 
-            $command = shell_exec("/var/www/html/radmed.co.id/bot-tele/quote-maker/run.sh $nama $message $userID $uniq 2>&1");
+            $command = shell_exec("public_html/radmed.co.id/bot-tele/quote-maker/run.sh $nama $message $userID $uniq 2>&1");
             // if ($command === null) {
             //     $error = error_get_last();
             //     echo "Error: " . $error['message'];
             // } else {
             //     echo $command;
             // }
-            $command = shell_exec("chmod 777 /var/www/html/radmed.co.id/bot-tele/public/quote/".$uniq.".png");
+            $command = shell_exec("chmod 777 public_html/radmed.co.id/bot-tele/public/quote/".$uniq.".png");
             // Menjalankan perintah dan menyimpan outputnya
             // if ($command === null) {
             //     $error = error_get_last();
