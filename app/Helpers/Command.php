@@ -334,17 +334,29 @@ class Command
 
     public static function mauGabut() 
     {
+        $url = "http://46.166.167.16/";
+        $html = file_get_contents($url);
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($html);
+
+        $links = $dom->getElementsByTagName('a');
+        $firstLink = "";
+        if ($links->length > 0) {
+            $firstLink = $links->item(0)->getAttribute('href')." (NSFW)";
+        }
+
         $response = "Pilih sendiri cuy mau gabut dimana :"."\n";
-        $response .= "http://179.43.163.52/ (Film sub indo)"."\n";
-        $response .= "https://pahe.li/ (Film)"."\n";
-        $response .= "https://tv1.lk21official.wiki/ (Film sub indo)"."\n";
+        $response .= "http://161.97.105.37/ (Film sub indo)"."\n";
+        $response .= "https://pahe.ink/ (Film)"."\n";
+        $response .= "https://filmseries21.my.id/ (Film indo)"."\n";
+        $response .= "https://amp.lk21official.mom/ (Film sub indo)"."\n";
         $response .= "https://unduhfilmhd.com/ (Film)"."\n";
-        $response .= "https://drive.seikel.workers.dev/0:/ (Film)"."\n";
         $response .= "https://subsc.my.id/ (subtitle)"."\n";
         $response .= "https://dema737ch.com/ (Doraemon)"."\n";
         $response .= "https://oploverz.best/ (Anime)"."\n";
         $response .= "https://mangaku.vip/ (Manga)"."\n";
         $response .= "https://www.ovagames.com/ (Game Bajakan)"."\n"."\n";
+        $response .=  $firstLink."\n"."\n";
         $response .= "Klo ada link mati, report aja ya.";
         return $response;
     }
