@@ -227,9 +227,9 @@ class Command
     {
         return [
             'now'           => Carbon::parse(date("Y-m-d H:i:s")),
-            'masuk'         => Carbon::parse('09:00:00'),
+            'masuk'         => Carbon::parse('08:00:00'),
             'batas_masuk'   => Carbon::parse('10:00:00'),
-            'pulang'        => Carbon::parse('18:00:00'),
+            'pulang'        => Carbon::parse('16:30:00'),
             'batas_pulang'  => Carbon::parse('23:59:59')
         ];
     }
@@ -759,7 +759,7 @@ class Command
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
         $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 25 Mei 2023 (10%) \n";
-        $response .= "- Tahun 2024 : ?? Februari 2024 (100% ?)\n";
+        $response .= "- Tahun 2024 : ?? ?? 2024 (?%)\n";
 
         return $response;
     }
