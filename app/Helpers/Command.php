@@ -749,7 +749,7 @@ class Command
         $response .= "- Tahun 2021 : 30 April 2021 \n";
         $response .= "- Tahun 2022 : 14 April 2022 \n";
         $response .= "- Tahun 2023 : 6 April 2023 \n";
-        $response .= "- Tahun 2024 : ?? Maret 2024 \n";
+        $response .= "- Tahun 2024 : 25 Maret 2024 \n";
         return $response;
     }
 
@@ -759,7 +759,7 @@ class Command
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
         $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 25 Mei 2023 (10%) \n";
-        $response .= "- Tahun 2024 : ?? ?? 2024 (?%)\n";
+        $response .= "- Tahun 2024 : 25 Maret 2024 (100%)\n";
 
         return $response;
     }
