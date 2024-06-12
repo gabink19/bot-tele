@@ -1094,6 +1094,7 @@ class Command
     
     public static function mauFaktaRandom()
     {
+        return "<b>Fakta Random dimatiin,ngebugs cuy !</b>";
         $array = json_decode(file_get_contents("https://api.akuari.my.id/randomtext/faktaunik"), true);
         return "<b>".$array["hasil"]."</b>";
     }
