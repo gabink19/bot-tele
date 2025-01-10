@@ -770,7 +770,7 @@ class Command
                 }
             }
         }
-        $thr = date('d-m-Y',strtotime('-14 days',strtotime($lebaran)));
+        $thr = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
         $response .= "- Tahun 2025 : ".$thr." (+ bonus ?)\n";
         return $response;
     }
