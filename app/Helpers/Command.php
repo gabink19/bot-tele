@@ -752,6 +752,26 @@ class Command
         $response .= "- Tahun 2022 : 14 April 2022 \n";
         $response .= "- Tahun 2023 : 6 April 2023 \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 \n";
+
+        $tahun_ini = date('Y');
+        $lebaran = '';
+        $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
+        foreach ($array as $key => $value) {
+            $substr = substr($key, 0,4);
+            if ($substr==$tahun_ini) {
+                if ($value['summary'][0]=='Hari Idul Fitri') {
+                    $lebaran = date('Y-m-d',strtotime($key));
+                    $hariini = date('Y-m-d');
+                    if (strtotime($lebaran)<strtotime($hariini)) {
+                        $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+        $thr = date('d-m-Y',strtotime('-14 days',strtotime($lebaran)));
+        $response .= "- Tahun 2025 : ".$thr." (+ bonus ?)\n";
         return $response;
     }
 
