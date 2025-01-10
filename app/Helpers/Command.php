@@ -776,12 +776,30 @@ class Command
     }
 
     public static function mauBonus() 
-    {   
+    {   $tahun_ini = date('Y');
+        $lebaran = '';
+        $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
+        foreach ($array as $key => $value) {
+            $substr = substr($key, 0,4);
+            if ($substr==$tahun_ini) {
+                if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
+                    $lebaran = date('Y-m-d',strtotime($key));
+                    $hariini = date('Y-m-d');
+                    if (strtotime($lebaran)<strtotime($hariini)) {
+                        $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+        $bonus = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
         $response = "- Tahun 2020 : 20 Januari 2020 \n";
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
         $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 25 Mei 2023 (10%) \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 (100%)\n";
+        $response .= "- Tahun 2025 : ".$bonus." (?)\n";
 
         return $response;
     }
