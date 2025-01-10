@@ -759,7 +759,7 @@ class Command
         foreach ($array as $key => $value) {
             $substr = substr($key, 0,4);
             if ($substr==$tahun_ini) {
-                if ($value['summary'][0]=='Hari Idul Fitri') {
+                if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
                     $lebaran = date('Y-m-d',strtotime($key));
                     $hariini = date('Y-m-d');
                     if (strtotime($lebaran)<strtotime($hariini)) {
