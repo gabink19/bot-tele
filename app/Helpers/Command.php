@@ -225,11 +225,41 @@ class Command
 
     public static function getWaktu()
     {
+        $tahun_ini=date('Y');
+        $lebaran = '';
+        $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
+        foreach ($array as $key => $value) {
+            $substr = substr($key, 0,4);
+            if ($substr==$tahun_ini) {
+                if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
+                    $lebaran = date('Y-m-d',strtotime($key));
+                    $hariini = date('Y-m-d');
+                    if (strtotime($lebaran)<strtotime($hariini)) {
+                        $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+        $masuk = Carbon::parse('09:00:00');
+        $pulang = Carbon::parse('18:00:00');
+        $puasa = date('Y-m-d',strtotime('-30 days',strtotime($lebaran)));
+        $hari_ini=date_create(date('Y-m-d'));
+        $date2=date_create($puasa);
+        $diff=date_diff($hari_ini,$date2);
+        if ($diff->format("%R%a") == 0) {
+            $masuk = Carbon::parse('08:00:00');
+            $pulang = Carbon::parse('16:30:00');
+        }elseif ($diff->format("%R") == "+") {
+            $masuk = Carbon::parse('08:00:00');
+            $pulang = Carbon::parse('16:30:00');
+        }
         return [
             'now'           => Carbon::parse(date("Y-m-d H:i:s")),
-            'masuk'         => Carbon::parse('09:00:00'),
+            'masuk'         => $masuk,
             'batas_masuk'   => Carbon::parse('10:00:00'),
-            'pulang'        => Carbon::parse('18:00:00'),
+            'pulang'        => $pulang,
             'batas_pulang'  => Carbon::parse('23:59:59')
         ];
     }
@@ -871,7 +901,7 @@ class Command
         foreach ($array as $key => $value) {
             $substr = substr($key, 0,4);
             if ($substr==$tahun_ini) {
-                if ($value['summary'][0]=='Hari Idul Fitri') {
+                if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
                     $lebaran = date('Y-m-d',strtotime($key));
                     $hariini = date('Y-m-d');
                     if (strtotime($lebaran)<strtotime($hariini)) {
