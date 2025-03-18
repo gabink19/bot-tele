@@ -9,6 +9,14 @@ class TelegramController extends Controller
 {
     private function telegramWebhook()
     {
+        
+        try {
+                $fh = fopen("Logs/"."Chat-".date("d-m-Y").".txt", "w") or die("Unable to open file!");;
+                fwrite($fh, date('H:i:s :').json_encode("MIMI").",\r\n");
+                fclose($fh);
+            } catch (\Exception $e) {
+                
+            }
         $is_send = false;
         $updates = json_decode(file_get_contents('php://input'), true);
         $upd = $updates;
