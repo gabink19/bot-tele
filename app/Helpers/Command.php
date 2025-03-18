@@ -782,6 +782,7 @@ class Command
         $response .= "- Tahun 2022 : 14 April 2022 \n";
         $response .= "- Tahun 2023 : 6 April 2023 \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 \n";
+        $response .= "- Tahun 2025 : 17 Maret 2024 \n";
 
         $tahun_ini = date('Y');
         $lebaran = '';
@@ -801,7 +802,10 @@ class Command
             }
         }
         $thr = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
-        $response .= "- Tahun 2025 : ".$thr." (+ bonus ?)\n";
+        $thn_thr = date('Y',strtotime($thr));
+        if (strtotime(date('Y-m-d')) < strtotime($thr)) {
+            $response .= "- Tahun ".$thn_thr." : ".$thr."\n";
+        }
         return $response;
     }
 
@@ -829,7 +833,13 @@ class Command
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
         $response .= "- Tahun 2023 : 28 Maret 2023 (90%) & 25 Mei 2023 (10%) \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 (100%)\n";
-        $response .= "- Tahun 2025 : ".$bonus." (?)\n";
+        $thn_bonus = date('Y',strtotime($bonus));
+        if (strtotime(date('Y-m-d')) < strtotime($bonus)) {
+            $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
+            $response .= "- Tahun ".$thn_bonus." : ".$bonus."\n";
+        }else{
+            $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
+        }
 
         return $response;
     }
