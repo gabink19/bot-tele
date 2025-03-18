@@ -782,9 +782,9 @@ class Command
         $response .= "- Tahun 2022 : 14 April 2022 \n";
         $response .= "- Tahun 2023 : 6 April 2023 \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 \n";
-        $response .= "- Tahun 2025 : 17 Maret 2024 \n";
+        $response .= "- Tahun 2025 : 17 Maret 2025 \n";
 
-        $tahun_ini = date('Y');
+        $tahun_ini = "2026";
         $lebaran = '';
         $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
         foreach ($array as $key => $value) {
