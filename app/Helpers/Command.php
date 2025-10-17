@@ -876,6 +876,18 @@ class Command
         $response .= "Maghrib : ".$data['data']['jadwal']['maghrib']."\n";
         $response .= "Isya : ".$data['data']['jadwal']['isya']."\n";
 
+        $url = "https://api.myquran.com/v2/sholat/jadwal/1227/".$date;
+        $client = new \GuzzleHttp\Client();
+        $resp1 = $client->request('GET', $url);
+        $data = json_decode($resp1->getBody()->getContents(), true);
+
+        $response .= "Wilayah : ".$data['data']['lokasi']." \n";
+        $response .= "Imsak : ".$data['data']['jadwal']['imsak']."\n";
+        $response .= "Subuh : ".$data['data']['jadwal']['subuh']."\n";
+        $response .= "Dzuhur : ".$data['data']['jadwal']['dzuhur']."\n";
+        $response .= "Ashar : ".$data['data']['jadwal']['ashar']."\n";
+        $response .= "Maghrib : ".$data['data']['jadwal']['maghrib']."\n";
+        $response .= "Isya : ".$data['data']['jadwal']['isya']."\n";
         return $response;
     }
 
