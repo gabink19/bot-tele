@@ -1,3 +1,5 @@
+
+text/x-generic Command.php ( PHP script, ASCII text, with very long lines, with CRLF line terminators )
 <?php
 
 namespace App\Helpers;
@@ -480,7 +482,9 @@ class Command
 
     public static function mauCuaca()
     {
-        $url = "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Banten.xml";
+        return "API bmkg berubah. Kapan Kapan dibenerin.";
+        // $url = "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Banten.xml";
+        $url = "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=36.71.05.1004";
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', $url);
         $data = $response->getBody()->getContents();
