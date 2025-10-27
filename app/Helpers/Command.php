@@ -1,5 +1,3 @@
-
-text/x-generic Command.php ( PHP script, ASCII text, with very long lines, with CRLF line terminators )
 <?php
 
 namespace App\Helpers;
