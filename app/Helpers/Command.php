@@ -876,7 +876,7 @@ class Command
         $response .= "Dzuhur : ".$data['data']['jadwal']['dzuhur']."\n";
         $response .= "Ashar : ".$data['data']['jadwal']['ashar']."\n";
         $response .= "Maghrib : ".$data['data']['jadwal']['maghrib']."\n";
-        $response .= "Isya : ".$data['data']['jadwal']['isya']."\n";
+        $response .= "Isya : ".$data['data']['jadwal']['isya']."\n\n";
 
         $url = "https://api.myquran.com/v2/sholat/jadwal/1227/".$date;
         $client = new \GuzzleHttp\Client();
