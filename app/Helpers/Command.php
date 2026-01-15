@@ -234,7 +234,7 @@ class Command
                 if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
                     $lebaran = date('Y-m-d',strtotime($key));
                     $hariini = date('Y-m-d');
-                    if (strtotime($lebaran)<strtotime($hariini)) {
+                    if (strtotime($lebaran)>strtotime($hariini)) {
                         $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
                         continue;
                     }
