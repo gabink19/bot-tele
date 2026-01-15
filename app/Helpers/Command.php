@@ -791,7 +791,7 @@ class Command
         $response .= "- Tahun 2024 : 25 Maret 2024 \n";
         $response .= "- Tahun 2025 : 17 Maret 2025 \n";
 
-        $tahun_ini = "2026";
+        $tahun_ini = date('Y');
         $lebaran = '';
         $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
         foreach ($array as $key => $value) {
@@ -811,7 +811,7 @@ class Command
         $thr = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
         $thn_thr = date('Y',strtotime($thr));
         if (strtotime(date('Y-m-d')) < strtotime($thr)) {
-            $response .= "- Tahun ".$thn_thr." : ".$thr."\n";
+            $response .= "- Tahun ".$thn_thr." : ".$thr." (Mungkin)\n";
         }
         return $response;
     }
@@ -843,7 +843,7 @@ class Command
         $thn_bonus = date('Y',strtotime($bonus));
         if (strtotime(date('Y-m-d')) < strtotime($bonus)) {
             $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
-            $response .= "- Tahun ".$thn_bonus." : ".$bonus."\n";
+            $response .= "- Tahun ".$thn_bonus." : ".$bonus." (Mungkin)\n";
         }else{
             $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
         }
