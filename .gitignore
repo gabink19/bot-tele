@@ -7,6 +7,6 @@ Homestead.yaml
 /public/Logs/
 /public/quote/
 /quote-maker/.env
-/public/count.txt
-/public/countLoker.txt
-/public/pull.php
+public/count.txt
+public/countLoker.txt
+public/pull.php
