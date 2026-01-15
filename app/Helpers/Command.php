@@ -304,50 +304,83 @@ class Command
     public static function mauGajianv2()
     {
         $hariini = date('Y-m-d');
+        $bulan_sekarang = date('Y-m');
+        
+        // Hitung tanggal gajian bulan ini (tanggal 25)
         $tgl_gajian_skrg = date('Y-m-25');
-        $hari_dualima_skrg = date("l", strtotime($tgl_gajian_skrg));
-        if ($hari_dualima_skrg=="Sunday") {
-            $tgl_gajian_skrg = date('Y-m-d',strtotime("-2 days",strtotime($tgl_gajian_skrg)));
-        }else if ($hari_dualima_skrg=="Saturday") {
-            $tgl_gajian_skrg = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_skrg)));
-        }else if (Util::CheckTanggalMerah(date('Ym25')) && $hari_dualima_skrg=="Monday") {
-            $tgl_gajian_skrg = date('Y-m-d',strtotime("-3 days",strtotime($tgl_gajian_skrg)));
-        }else if (Util::CheckTanggalMerah(date('Ym25'))) {
-            $tgl_gajian_skrg = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_skrg)));
+        
+        // Cek apakah tanggal 25 jatuh pada weekend atau tanggal merah
+        // Jika ya, mundurkan sampai hari kerja
+        while (true) {
+            $hari = date("l", strtotime($tgl_gajian_skrg));
+            $tanggal_format = date('Ymd', strtotime($tgl_gajian_skrg));
+            
+            // Cek apakah weekend
+            if ($hari == "Saturday" || $hari == "Sunday") {
+                $tgl_gajian_skrg = date('Y-m-d', strtotime("-1 day", strtotime($tgl_gajian_skrg)));
+                continue;
+            }
+            
+            // Cek apakah tanggal merah
+            if (Util::CheckTanggalMerah($tanggal_format)) {
+                $tgl_gajian_skrg = date('Y-m-d', strtotime("-1 day", strtotime($tgl_gajian_skrg)));
+                continue;
+            }
+            
+            // Jika bukan weekend dan bukan tanggal merah, break
+            break;
         }
 
-        $date1=date_create($hariini);
-        $date2=date_create($tgl_gajian_skrg);
-        $diff=date_diff($date1,$date2);
+        $date1 = date_create($hariini);
+        $date2 = date_create($tgl_gajian_skrg);
+        $diff = date_diff($date1, $date2);
 
-        if ($diff->format("%R%a")==0) {
+        if ($diff->format("%R%a") == 0) {
             $response = "Cek rekening BNI cuy";
-        }else if ($diff->format("%R") == "+") {
+        } else if ($diff->format("%R") == "+") {
             if ($diff->format("%a") == "1") {
                 $response = "Besok gajian cuy";
-            }else{
+            } else {
                 $response = $diff->format("%a") . " hari lagi gajiannya cuy !!";
             }
-        }else if ($diff->format("%R") == "-") {
-            $tgl_gajian_depan = date('Y-m-25',strtotime("+1 month",strtotime($tgl_gajian_skrg)));
-            $hari_dualima_depan = date("l", strtotime($tgl_gajian_depan));
-            if ($hari_dualima_depan=="Sunday") {
-                $tgl_gajian_depan = date('Y-m-d',strtotime("-2 days",strtotime($tgl_gajian_depan)));
-            }else if ($hari_dualima_depan=="Saturday") {
-                $tgl_gajian_depan = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_depan)));
-            }else if (Util::CheckTanggalMerah(date('Ym25',strtotime($tgl_gajian_depan))) && $hari_dualima_depan=="Monday") {
-                $tgl_gajian_depan = date('Y-m-d',strtotime("-3 days",strtotime($tgl_gajian_depan)));
-            }else if (Util::CheckTanggalMerah(date('Ym25',strtotime($tgl_gajian_depan)))) {
-                $tgl_gajian_depan = date('Y-m-d',strtotime("-1 days",strtotime($tgl_gajian_depan)));
+        } else if ($diff->format("%R") == "-") {
+            // Sudah lewat gajian bulan ini, hitung gajian bulan depan
+            $tgl_gajian_depan = date('Y-m-25', strtotime("+1 month", strtotime($bulan_sekarang)));
+            
+            // Cek apakah tanggal 25 bulan depan jatuh pada weekend atau tanggal merah
+            while (true) {
+                $hari = date("l", strtotime($tgl_gajian_depan));
+                $tanggal_format = date('Ymd', strtotime($tgl_gajian_depan));
+                
+                // Cek apakah weekend
+                if ($hari == "Saturday" || $hari == "Sunday") {
+                    $tgl_gajian_depan = date('Y-m-d', strtotime("-1 day", strtotime($tgl_gajian_depan)));
+                    continue;
+                }
+                
+                // Cek apakah tanggal merah
+                if (Util::CheckTanggalMerah($tanggal_format)) {
+                    $tgl_gajian_depan = date('Y-m-d', strtotime("-1 day", strtotime($tgl_gajian_depan)));
+                    continue;
+                }
+                
+                // Jika bukan weekend dan bukan tanggal merah, break
+                break;
             }
 
-            $date1=date_create($hariini);
-            $date2=date_create($tgl_gajian_depan);
-            $diff=date_diff($date1,$date2);
+            $date1 = date_create($hariini);
+            $date2 = date_create($tgl_gajian_depan);
+            $diff = date_diff($date1, $date2);
             $response = "";
-            if ($diff->format("%a")>28) {
-                $rand = ["Baru gajian udah nnyain aja. \n","Baru juga gajian. \n","Dikemanain tuh gajinya udah abis aja. \n","Sabar masih lama gajiannya. \n"];
-                $response .= $rand[rand(0,3)];
+            
+            if ($diff->format("%a") > 28) {
+                $rand = [
+                    "Baru gajian udah nanyain aja. \n",
+                    "Baru juga gajian. \n",
+                    "Dikemanain tuh gajinya udah abis aja. \n",
+                    "Sabar masih lama gajiannya. \n"
+                ];
+                $response .= $rand[rand(0, 3)];
             }
             $response .= $diff->format("%a") . " hari lagi gajiannya cuy !!";
         }
