@@ -223,37 +223,42 @@ class Command
         ];
     }
 
+    private const HARI_IDUL_FITRI = 'Hari Idul Fitri';
+    private const ONE_YEAR = '+1 year';
+
     public static function getWaktu()
     {
         $tahun_ini=date('Y');
         $lebaran = '';
         $array = json_decode(file_get_contents(env("TANGGAL_MERAH")), true);
         foreach ($array as $key => $value) {
-            $substr = substr($key, 0,4);
-            if ($substr==$tahun_ini) {
-                if (strpos($value['summary'][0], 'Hari Idul Fitri') !== false) {
-                    $lebaran = date('Y-m-d',strtotime($key));
-                    $hariini = date('Y-m-d');
-                    if (strtotime($lebaran)>strtotime($hariini)) {
-                        $tahun_ini = date('Y',strtotime("+1 year",strtotime($hariini)));
-                        continue;
-                    }
-                    break;
-                }
+            $substr = substr($key, 0, 4);
+            if ($substr == $tahun_ini && strpos($value['summary'][0], self::HARI_IDUL_FITRI) !== false) {
+                $lebaran = date('Y-m-d', strtotime($key));
+                // $hariini = date('Y-m-d');
+                // if (strtotime($lebaran) < strtotime($hariini)) {
+                //     $tahun_ini = date('Y', strtotime(self::ONE_YEAR, strtotime($hariini)));
+                //     continue;
+                // }
+                break;
             }
         }
+        
         $masuk = Carbon::parse('09:00:00');
         $pulang = Carbon::parse('18:00:00');
-        $puasa = date('Y-m-d',strtotime('-30 days',strtotime($lebaran)));
-        $hari_ini=date_create(date('Y-m-d'));
-        $date2=date_create($puasa);
-        $diff=date_diff($hari_ini,$date2);
-        if ($diff->format("%R%a") == 0) {
+        $puasa = date('Y-m-d', strtotime('-30 days', strtotime($lebaran)));
+        $hari_ini = date_create(date('Y-m-d'));
+        $date2 = date_create($puasa);
+        $diff = date_diff($hari_ini, $date2);
+
+        // Jika selisih hari kurang dari atau sama dengan 30, pulang jam 16:30
+        $selisihHari = (int)$diff->format("%a");
+        if ($diff->format("%R") == "+" && $selisihHari <= 30) {
             $masuk = Carbon::parse('08:00:00');
             $pulang = Carbon::parse('16:30:00');
-        }elseif ($diff->format("%R") == "+") {
+        } elseif ($diff->format("%R") == "+") {
             $masuk = Carbon::parse('08:00:00');
-            $pulang = Carbon::parse('16:30:00');
+            $pulang = Carbon::parse('18:00:00');
         }
         return [
             'now'           => Carbon::parse(date("Y-m-d H:i:s")),
