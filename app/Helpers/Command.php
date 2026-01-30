@@ -1262,52 +1262,39 @@ class Command
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
+        $rows = $xpath->query("//div[contains(@class, 'certicard-left')]//table//tr");
 
-        // Ambil semua elemen dengan class 'ngc-title'
-        $titles = $xpath->query("//*[contains(@class, 'ngc-title')]");
-        $dataTitle = [];
-        foreach ($titles as $title) {
-            $text = trim($title->nodeValue);
-            if (!empty($text)) {
-                $dataTitle[] = $text;
+        // --- 2. FORMAT PESAN UNTUK TELEGRAM ---
+        $message = "<b>💰 UPDATE HARGA EMAS ANTAM 💰</b>\n";
+        $message .= "<i>Sumber: Aneka Logam</i>\n\n";
+        $message .= "<pre>";
+        $message .= "Gram  | Jual (Rp)    | Beli (Rp)\n";
+        $message .= "--------------------------------\n";
+
+        $count = 0;
+        foreach ($rows as $row) {
+            $cols = $xpath->query("td", $row);
+            if ($cols->length >= 3) {
+                $count++;
+                $gram = str_pad(trim($cols->item(0)->nodeValue), 5); // Pad agar sejajar
+                
+                // Membersihkan simbol Rp dan titik untuk merapikan teks
+                $jual = str_replace(['Rp', '.', ' '], '', trim($cols->item(1)->nodeValue));
+                $beli = str_replace(['Rp', '.', ' '], '', trim($cols->item(2)->nodeValue));
+                
+                // Format ulang angka agar rapi di kolom
+                $jual_fmt = str_pad(number_format((int)$jual, 0, ',', '.'), 11, " ", STR_PAD_LEFT);
+                $beli_fmt = str_pad(number_format((int)$beli, 0, ',', '.'), 11, " ", STR_PAD_LEFT);
+
+                $message .= "{$gram} | {$jual_fmt} | {$beli_fmt}\n";
             }
         }
+        $message .= "</pre>\n";
+        $message .= "\n📅 <i>" . date('d M Y H:i') . " WIB</i>";
 
-        // Ambil semua elemen dengan class 'tprice'
-        $prices = $xpath->query("//*[contains(@class, 'tprice')]");
-        $dataHarga = [];
-        foreach ($prices as $price) {
-            $rawPrice = trim($price->nodeValue);
-            $cleanPrice = preg_replace('/[^0-9]/', '', $rawPrice);
-            if (!empty($rawPrice)) {
-                $dataHarga[] = [
-                    'raw'   => $rawPrice,
-                    'clean' => (int)$cleanPrice
-                ];
-            }
+        if ($count == 0) {
+            $message = "⚠️ Gagal mengambil data harga emas. Periksa struktur website.";
         }
-
-        // Gabungkan judul dan harga (asumsi urutan sama)
-        $result = [];
-        $count = min(count($dataTitle), count($dataHarga));
-        for ($i = 0; $i < $count; $i++) {
-            $result[] = $dataTitle[$i] . ': ' . $dataHarga[$i]['raw'];
-        }
-
-        // Jika tidak ada judul, hanya tampilkan harga
-        if ($count == 0 && count($dataHarga) > 0) {
-            foreach ($dataHarga as $harga) {
-                $result[] = $harga['raw'];
-            }
-        }
-
-        // Return sebagai teks (string)
-        if (empty($result)) {
-            return "Tidak ada data harga emas ditemukan.";
-        }
-        $result[] = "\nSumber: anekalogam.co.id";
-        $res = implode("\n", $result);
-        $res = "<b>Harga Emas LM Hari Ini:</b>\n\n" . $res;
-        return $res;
+        return $message;
     }
 }
