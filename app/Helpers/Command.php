@@ -1266,27 +1266,26 @@ class Command
 
         // --- 2. FORMAT PESAN UNTUK TELEGRAM ---
         $message = "<b>💰 UPDATE HARGA EMAS ANTAM 💰</b>\n";
-        $message .= "<i>Sumber: Aneka Logam</i>\n\n";
+        $message .= "<i>Sumber: <a href='https://www.anekalogam.co.id/id'>Aneka Logam</a></i>\n";
         $message .= "<pre>";
-        $message .= "Gram  | Jual (Rp)    | Beli (Rp)\n";
-        $message .= "--------------------------------\n";
+        // Header rata tengah
+        $message .= str_pad('Gram', 8, ' ', STR_PAD_BOTH) . '│' . str_pad('Jual (Rp)', 15, ' ', STR_PAD_BOTH) . '│' . str_pad('Beli (Rp)', 15, ' ', STR_PAD_BOTH) . "\n";
+        $message .= str_repeat('─', 8) . '┼' . str_repeat('─', 15) . '┼' . str_repeat('─', 15) . "\n";
 
         $count = 0;
         foreach ($rows as $row) {
             $cols = $xpath->query("td", $row);
             if ($cols->length >= 3) {
                 $count++;
-                $gram = str_pad(trim($cols->item(0)->nodeValue), 5); // Pad agar sejajar
-                
+                $gram = trim($cols->item(0)->nodeValue);
                 // Membersihkan simbol Rp dan titik untuk merapikan teks
                 $jual = str_replace(['Rp', '.', ' '], '', trim($cols->item(1)->nodeValue));
                 $beli = str_replace(['Rp', '.', ' '], '', trim($cols->item(2)->nodeValue));
-                
                 // Format ulang angka agar rapi di kolom
-                $jual_fmt = str_pad(number_format((int)$jual, 0, ',', '.'), 11, " ", STR_PAD_LEFT);
-                $beli_fmt = str_pad(number_format((int)$beli, 0, ',', '.'), 11, " ", STR_PAD_LEFT);
-
-                $message .= "{$gram} | {$jual_fmt} | {$beli_fmt}\n";
+                $gram_fmt = str_pad($gram, 8, ' ', STR_PAD_RIGHT);
+                $jual_fmt = str_pad(number_format((int)$jual, 0, ',', '.'), 15, ' ', STR_PAD_LEFT);
+                $beli_fmt = str_pad(number_format((int)$beli, 0, ',', '.'), 15, ' ', STR_PAD_LEFT);
+                $message .= $gram_fmt . '│' . $jual_fmt . '│' . $beli_fmt . "\n";
             }
         }
         $message .= "</pre>\n";
