@@ -100,6 +100,9 @@ class Command
             case "27" : 
                 return self::mauFaktaRandom();
                 break;
+            case "28" : 
+                return self::mauEmas();
+                break;
             default :
                 "nothing";
             }
@@ -218,6 +221,10 @@ class Command
             ],
             '/mauFaktaRandom' => [
                 'deskripsi' => 'Untuk mendapatkan fakta-fakta random.',
+                'type' => 'text'
+            ],
+            '/mauEmas' => [
+                'deskripsi' => 'Cek harga emas hari ini',
                 'type' => 'text'
             ]
         ];
@@ -1227,5 +1234,80 @@ class Command
         return "<b>Fakta Random dimatiin,ngebugs cuy !</b>";
         $array = json_decode(file_get_contents("https://api.akuari.my.id/randomtext/faktaunik"), true);
         return "<b>".$array["hasil"]."</b>";
+    }
+
+    public static function mauEmas()
+    {
+        // URL target
+        $url = "https://www.anekalogam.co.id/id";
+
+        // 1. Inisialisasi cURL untuk mengambil HTML
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // User Agent diperlukan agar server tidak memblokir request (seolah-olah dari browser)
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+
+        $html = curl_exec($ch);
+        unset($ch); // Let PHP's garbage collector handle resource cleanup
+
+        if (!$html) {
+            return "Gagal mengambil data dari website.";
+        }
+
+        // 2. Parsing HTML menggunakan DOMDocument
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($dom);
+
+        // Ambil semua elemen dengan class 'ngc-title'
+        $titles = $xpath->query("//*[contains(@class, 'ngc-title')]");
+        $dataTitle = [];
+        foreach ($titles as $title) {
+            $text = trim($title->nodeValue);
+            if (!empty($text)) {
+                $dataTitle[] = $text;
+            }
+        }
+
+        // Ambil semua elemen dengan class 'tprice'
+        $prices = $xpath->query("//*[contains(@class, 'tprice')]");
+        $dataHarga = [];
+        foreach ($prices as $price) {
+            $rawPrice = trim($price->nodeValue);
+            $cleanPrice = preg_replace('/[^0-9]/', '', $rawPrice);
+            if (!empty($rawPrice)) {
+                $dataHarga[] = [
+                    'raw'   => $rawPrice,
+                    'clean' => (int)$cleanPrice
+                ];
+            }
+        }
+
+        // Gabungkan judul dan harga (asumsi urutan sama)
+        $result = [];
+        $count = min(count($dataTitle), count($dataHarga));
+        for ($i = 0; $i < $count; $i++) {
+            $result[] = $dataTitle[$i] . ': ' . $dataHarga[$i]['raw'];
+        }
+
+        // Jika tidak ada judul, hanya tampilkan harga
+        if ($count == 0 && count($dataHarga) > 0) {
+            foreach ($dataHarga as $harga) {
+                $result[] = $harga['raw'];
+            }
+        }
+
+        // Return sebagai teks (string)
+        if (empty($result)) {
+            return "Tidak ada data harga emas ditemukan.";
+        }
+        $result[] = "\nSumber: anekalogam.co.id";
+        $res = implode("\n", $result);
+        $res = "<b>Harga Emas LM Hari Ini:</b>\n\n" . $res;
+        return $res;
     }
 }
