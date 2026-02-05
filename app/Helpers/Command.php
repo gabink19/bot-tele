@@ -1324,12 +1324,15 @@ class Command
                     $dt->setTimezone(new \DateTimeZone('Asia/Jakarta'));
                     $lastUpdateWib = $dt->format('d-m-Y H:i:s') . ' WIB';
                 }
-                return "Kurs USD/IDR hari ini: 1 USD = Rp $kurs\n\nLast update: $lastUpdateWib\nSumber: $url";
+                return "💵 <b>Kurs USD/IDR Hari Ini</b> 💵\n\n"
+                    . "1 USD = <b>Rp $kurs</b>\n"
+                    . "🕒 <i>Last update:</i> <b>$lastUpdateWib</b>\n"
+                    . "🌐 <a href=\"$url\">Sumber: open.er-api.com</a>";
             } else {
-                return "Gagal mengambil data kurs USD/IDR.";
+                return "⚠️ Gagal mengambil data kurs USD/IDR.";
             }
         } catch (\Exception $e) {
-            return "Error mengambil kurs: " . $e->getMessage();
+            return "❌ Error mengambil kurs: " . $e->getMessage();
         }
     }
 }
