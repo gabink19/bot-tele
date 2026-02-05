@@ -1388,7 +1388,7 @@ class Command
                             $updateText = $bulanText;
                         }
                         
-                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad($harga, 13, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 15, " ", STR_PAD_LEFT) . "\n";
+                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad($harga, 13, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 10, " ", STR_PAD_LEFT) . "\n";
                     } else {
                         $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("N/A", 13, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 15, " ", STR_PAD_LEFT) . "\n";
                     }
