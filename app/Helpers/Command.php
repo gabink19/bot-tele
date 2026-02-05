@@ -1316,7 +1316,15 @@ class Command
             $data = json_decode($response->getBody()->getContents(), true);
             if (isset($data['rates']['IDR'])) {
                 $kurs = number_format($data['rates']['IDR'], 2, ',', '.');
-                return "Kurs USD/IDR hari ini: 1 USD = Rp $kurs";
+                // Ambil waktu update UTC dan konversi ke WIB (+07)
+                $lastUpdateUtc = $data['time_last_update_utc'] ?? null;
+                $lastUpdateWib = '';
+                if ($lastUpdateUtc) {
+                    $dt = new \DateTime($lastUpdateUtc, new \DateTimeZone('UTC'));
+                    $dt->setTimezone(new \DateTimeZone('Asia/Jakarta'));
+                    $lastUpdateWib = $dt->format('d-m-Y H:i:s') . ' WIB';
+                }
+                return "Kurs USD/IDR hari ini: 1 USD = Rp $kurs\n\nLast update: $lastUpdateWib\nSumber: $url";
             } else {
                 return "Gagal mengambil data kurs USD/IDR.";
             }
