@@ -1355,17 +1355,17 @@ class Command
 
             // Mapping bulan bahasa Inggris ke Indonesia
             $bulanMap = [
-                'Jan' => 'Januari', 'Feb' => 'Februari', 'Mar' => 'Maret',
-                'Apr' => 'April', 'May' => 'Mei', 'Jun' => 'Juni',
-                'Jul' => 'Juli', 'Aug' => 'Agustus', 'Sep' => 'September',
-                'Oct' => 'Oktober', 'Nov' => 'November', 'Dec' => 'Desember'
+                'Jan' => 'Jan', 'Feb' => 'Feb', 'Mar' => 'Mar',
+                'Apr' => 'Apr', 'May' => 'Mei', 'Jun' => 'Jun',
+                'Jul' => 'Jul', 'Aug' => 'Agu', 'Sep' => 'Sep',
+                'Oct' => 'Okt', 'Nov' => 'Nov', 'Dec' => 'Des'
             ];
 
             $msg = "<b>⛽ Harga BBM Terbaru (Rata-rata Nasional)</b>\n";
             $msg .= "<i>Sumber: oto.com</i>\n\n";
             $msg .= "<pre>";
-            $msg .= str_pad("Jenis BBM", 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("Update", 14, " ", STR_PAD_LEFT) . "\n";
-            $msg .= str_repeat("─", 18) . "┼" . str_repeat("─", 14) . "┼" . str_repeat("─", 16) . "\n";
+            $msg .= str_pad("Jenis BBM", 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("Last Update", 12, " ", STR_PAD_LEFT) . "\n";
+            $msg .= str_repeat("─", 16) . "─┼─" . str_repeat("─", 12) . "─┼─" . str_repeat("─", 15) . "\n";
 
             foreach ($bbmList as $nama => $url) {
                 $json = @file_get_contents($url);
@@ -1388,12 +1388,12 @@ class Command
                             $updateText = $bulanText;
                         }
                         
-                        $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad($harga, 12, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 14, " ", STR_PAD_LEFT) . "\n";
+                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad($harga, 13, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 15, " ", STR_PAD_LEFT) . "\n";
                     } else {
-                        $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("N/A", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 14, " ", STR_PAD_LEFT) . "\n";
+                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("N/A", 13, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 15, " ", STR_PAD_LEFT) . "\n";
                     }
                 } else {
-                    $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("Error", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 14, " ", STR_PAD_LEFT) . "\n";
+                    $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("Error", 13, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 15, " ", STR_PAD_LEFT) . "\n";
                 }
             }
 
