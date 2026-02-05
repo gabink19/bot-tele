@@ -103,6 +103,9 @@ class Command
             case "28" : 
                 return self::mauEmas();
                 break;
+            case "29" : 
+                return self::mauDollar();
+                break;
             default :
                 "nothing";
             }
@@ -225,6 +228,10 @@ class Command
             ],
             '/mauEmas' => [
                 'deskripsi' => 'Cek harga emas hari ini',
+                'type' => 'text'
+            ],
+            '/mauDollar' => [
+                'deskripsi' => 'Cek kurs USD/IDR terbaru',
                 'type' => 'text'
             ]
         ];
@@ -1298,5 +1305,23 @@ class Command
             $message = "⚠️ Gagal mengambil data harga emas. Periksa struktur website.";
         }
         return $message;
+    }
+
+    public static function mauDollar()
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $url = "https://open.er-api.com/v6/latest/USD";
+            $response = $client->request('GET', $url, ['verify' => false]);
+            $data = json_decode($response->getBody()->getContents(), true);
+            if (isset($data['rates']['IDR'])) {
+                $kurs = number_format($data['rates']['IDR'], 2, ',', '.');
+                return "Kurs USD/IDR hari ini: 1 USD = Rp $kurs";
+            } else {
+                return "Gagal mengambil data kurs USD/IDR.";
+            }
+        } catch (\Exception $e) {
+            return "Error mengambil kurs: " . $e->getMessage();
+        }
     }
 }
