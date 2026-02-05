@@ -1325,7 +1325,7 @@ class Command
                     $lastUpdateWib = $dt->format('d-m-Y H:i:s') . ' WIB';
                 }
                 return "💵 <b>Kurs USD/IDR Hari Ini</b> 💵\n\n"
-                    . "1 USD = <b>Rp $kurs</b>\n"
+                    . "🇺🇸 1 USD = <b>Rp $kurs</b> 🇮🇩\n"
                     . "🕒 <i>Last update:</i> <b>$lastUpdateWib</b>\n"
                     . "🌐 <a href=\"$url\">Sumber: open.er-api.com</a>";
             } else {
