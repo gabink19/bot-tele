@@ -106,6 +106,9 @@ class Command
             case "29" : 
                 return self::mauDollar();
                 break;
+            case "30" : 
+                return self::mauCekHargaBBM();
+                break;
             default :
                 "nothing";
             }
@@ -233,7 +236,11 @@ class Command
             '/mauDollar' => [
                 'deskripsi' => 'Cek kurs USD/IDR terbaru',
                 'type' => 'text'
-            ]
+            ],
+            '/mauCekHargaBBM' => [
+                'deskripsi' => 'Cek harga BBM Pertamina terbaru',
+                'type' => 'text'
+            ],
         ];
     }
 
@@ -1333,6 +1340,70 @@ class Command
             }
         } catch (\Exception $e) {
             return "❌ Error mengambil kurs: " . $e->getMessage();
+        }
+    } 
+    public static function mauCekHargaBBM()
+    {
+        try {
+            $bbmList = [
+                'Pertalite' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=1&input=month&categorySlug=mobil',
+                'Pertamax' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=3&input=month&categorySlug=mobil',
+                'Pertamax Turbo' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=2&input=month&categorySlug=mobil',
+                'Dexlite' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=4&input=month&categorySlug=mobil',
+                'Pertamina Dex' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=5&input=month&categorySlug=mobil'
+            ];
+
+            // Mapping bulan bahasa Inggris ke Indonesia
+            $bulanMap = [
+                'Jan' => 'Januari', 'Feb' => 'Februari', 'Mar' => 'Maret',
+                'Apr' => 'April', 'May' => 'Mei', 'Jun' => 'Juni',
+                'Jul' => 'Juli', 'Aug' => 'Agustus', 'Sep' => 'September',
+                'Oct' => 'Oktober', 'Nov' => 'November', 'Dec' => 'Desember'
+            ];
+
+            $msg = "<b>⛽ Harga BBM Terbaru (Rata-rata Nasional)</b>\n";
+            $msg .= "<i>Sumber: oto.com</i>\n\n";
+            $msg .= "<pre>";
+            $msg .= str_pad("Jenis BBM", 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("Update", 14, " ", STR_PAD_LEFT) . "\n";
+            $msg .= str_repeat("─", 18) . "┼" . str_repeat("─", 14) . "┼" . str_repeat("─", 16) . "\n";
+
+            foreach ($bbmList as $nama => $url) {
+                $json = @file_get_contents($url);
+                if ($json) {
+                    $data = json_decode($json, true);
+                    if ($data && is_array($data) && count($data) > 0) {
+                        // Ambil data terakhir
+                        $lastData = end($data);
+                        $harga = $lastData['displayPrice'];
+                        $bulanText = $lastData['text']; // Contoh: "Feb 26"
+                        
+                        // Parse dan format ulang bulan
+                        $parts = explode(' ', $bulanText);
+                        if (count($parts) == 2) {
+                            $bulanEng = $parts[0];
+                            $tahun = '20' . $parts[1]; // "26" menjadi "2026"
+                            $bulanInd = isset($bulanMap[$bulanEng]) ? $bulanMap[$bulanEng] : $bulanEng;
+                            $updateText = $bulanInd . ' ' . $tahun;
+                        } else {
+                            $updateText = $bulanText;
+                        }
+                        
+                        $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad($harga, 12, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 14, " ", STR_PAD_LEFT) . "\n";
+                    } else {
+                        $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("N/A", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 14, " ", STR_PAD_LEFT) . "\n";
+                    }
+                } else {
+                    $msg .= str_pad($nama, 18, " ", STR_PAD_RIGHT) . "│ " . str_pad("Error", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 14, " ", STR_PAD_LEFT) . "\n";
+                }
+            }
+
+            $msg .= "</pre>\n";
+            $msg .= "\n📅 <i>Data update: " . date('d M Y H:i') . " WIB</i>\n";
+            $msg .= "<b>Catatan:</b> Harga dapat berbeda di setiap daerah.";
+
+            return $msg;
+        } catch (\Exception $e) {
+            return "❌ Error: " . $e->getMessage();
         }
     }
 }
