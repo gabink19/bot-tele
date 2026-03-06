@@ -844,6 +844,7 @@ class Command
         $response .= "- Tahun 2023 : 6 April 2023 \n";
         $response .= "- Tahun 2024 : 25 Maret 2024 \n";
         $response .= "- Tahun 2025 : 17 Maret 2025 \n";
+        $response .= "- Tahun 2026 : 6 Maret 2026 \n";
 
         $tahun_ini = date('Y');
         $lebaran = '';
@@ -865,7 +866,7 @@ class Command
         $thr = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
         $thn_thr = date('Y',strtotime($thr));
         if (strtotime(date('Y-m-d')) < strtotime($thr)) {
-            $response .= "- Tahun ".$thn_thr." : ".$thr." (Mungkin)\n";
+            // $response .= "- Tahun ".$thn_thr." : ".$thr." (Mungkin)\n";
         }
         return $response;
     }
