@@ -889,7 +889,7 @@ class Command
                 }
             }
         }
-        $bonus = date('d M Y',strtotime('-14 days',strtotime($lebaran)));
+        $bonus = date('d M Y',strtotime('-7 days',strtotime($lebaran)));
         $response = "- Tahun 2020 : 20 Januari 2020 \n";
         $response .= "- Tahun 2021 : 29 April 2021 \n";
         $response .= "- Tahun 2022 : 28 April 2022 (50%) & Juni 2022 (50%) \n";
