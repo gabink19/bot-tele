@@ -435,16 +435,10 @@ class Command
         }
 
         $response = "Pilih sendiri cuy mau gabut dimana :"."\n";
-        $response .= "https://94.72.98.58/  (Film indo)"."\n";
-        $response .= "https://gudangmovies21.support/  (Film sub indo)"."\n";
-        $response .= "http://161.97.105.37/ (Film sub indo)"."\n";
+        $response .= "https://streamex.net/ (Film)"."\n";
         $response .= "https://pahe.ink/ (Film)"."\n";
-        $response .= "https://filmseries21.my.id/ (Film indo)"."\n";
-        $response .= "https://amp.lk21official.mom/ (Film sub indo)"."\n";
-        $response .= "https://unduhfilmhd.com/ (Film)"."\n";
         $response .= "https://subsc.my.id/ (subtitle)"."\n";
         $response .= "https://dema737ch.com/ (Doraemon)"."\n";
-        $response .= "https://oploverz.best/ (Anime)"."\n";
         $response .= "https://mangaku.vip/ (Manga)"."\n";
         $response .= "https://www.ovagames.com/ (Game Bajakan)"."\n"."\n";
         $response .=  $firstLink."\n"."\n";
