@@ -274,11 +274,11 @@ class Command
 
         // Jika selisih hari kurang dari atau sama dengan 30, pulang jam 16:30
         $selisihHari = (int)$diff->format("%a");
-        if ($diff->format("%R") == "+" && $selisihHari <= 30) {
+        if ($selisihHari <= 30) {
             $masuk = Carbon::parse('08:00:00');
             $pulang = Carbon::parse('16:30:00');
         } elseif ($diff->format("%R") == "+") {
-            $masuk = Carbon::parse('08:00:00');
+            $masuk = Carbon::parse('09:00:00');
             $pulang = Carbon::parse('18:00:00');
         }
         return [
