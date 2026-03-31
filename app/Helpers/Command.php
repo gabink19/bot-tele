@@ -892,9 +892,11 @@ class Command
         $thn_bonus = date('Y',strtotime($bonus));
         if (strtotime(date('Y-m-d')) < strtotime($bonus)) {
             $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
+            $response .= "- Tahun 2026 : 31 Maret 2026 (?%)\n";
             $response .= "- Tahun ".$thn_bonus." : ".$bonus." (Mungkin)\n";
         }else{
             $response .= "- Tahun 2025 : 25 Maret 2025 (100%)\n";
+            $response .= "- Tahun 2026 : 31 Maret 2026 (?%)\n";
         }
 
         return $response;
