@@ -1413,7 +1413,7 @@ class Command
     public static function mauCekLelang()
     {
         try {
-            $ids = [18, 20];
+            $ids = [18, 20, 43];
             $client = new \GuzzleHttp\Client();
             $headers = [
                 'verify' => false,
