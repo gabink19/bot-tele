@@ -110,7 +110,7 @@ class Command
                 return self::mauCekHargaBBM();
                 break;
             case "31" : 
-                return self::mauCekLelang();
+                // return self::mauCekLelang();
                 break;
             default :
                 "nothing";
