@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\Reminder::class,
+        \App\Console\Commands\MonitorLelang::class,
     ];
 
     /**
@@ -25,5 +26,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(\App\Console\Commands\Reminder::class)->everyMinute();
+        $schedule->command(\App\Console\Commands\MonitorLelang::class)->everyMinute();
     }
 }

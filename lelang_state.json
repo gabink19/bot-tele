@@ -1,0 +1,26 @@
+{
+    "18": {
+        "name": "OCULUS QUEST 2 - ADVANCED GAMING VR AIO HEADSET 128GB - USA\u200b",
+        "current_bid": 1800000,
+        "current_leader": null,
+        "start_price": 1800000,
+        "end_time": "2026-04-10T16:59:00+00:00",
+        "status": "active"
+    },
+    "20": {
+        "name": "PLAYSTATION 4 SLIM (upgraded to 1TB)",
+        "current_bid": 2000000,
+        "current_leader": "Henady Syahputra",
+        "start_price": 1000000,
+        "end_time": "2026-04-10T16:59:00+00:00",
+        "status": "active"
+    },
+    "43": {
+        "name": "ASUS Vivobook s14",
+        "current_bid": 350000,
+        "current_leader": "Rizky Kuntoro",
+        "start_price": 200000,
+        "end_time": "2026-04-10T16:59:00+00:00",
+        "status": "active"
+    }
+}
