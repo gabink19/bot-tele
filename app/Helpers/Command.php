@@ -1412,33 +1412,33 @@ class Command
     }
     public static function mauCekLelang()
     {
+        // Anti-spam: max 10 hits per 60 seconds
+        $spamFile = "countLelang.txt";
+        $maxHits  = 10;
+        $window   = 60; // seconds
+
         try {
-            $now    = date('Hi');
-            $limit  = $now."+10";
-            $fh_res = fopen("count.txt", 'r') or die("Unable to open file!");
-            $read   = fread($fh_res,filesize("count.txt"));
-            if ($read==$limit) {
-                return "BACOT";
-            }else{
-                if ($read=='') {
-                    $limit = $now."+1";
-                }else{
-                    $parse = explode("+", $read);
-                    if ($now != $parse[0]) {
-                        $limit = $now."+1";
-                    }else{
-                        $count  = (int)$parse[1]+1;
-                        $limit = $now."+".$count;
-                    }
-                }
+            if (!file_exists($spamFile)) {
+                file_put_contents($spamFile, time() . "+1");
             }
 
-            $fh = fopen("count.txt", "w") or die("Unable to open file!");;
-            fwrite($fh, $limit);
-            fclose($fh);
+            $read  = file_get_contents($spamFile);
+            $parts = explode("+", $read);
+            $storedTime  = isset($parts[0]) ? (int)$parts[0] : 0;
+            $storedCount = isset($parts[1]) ? (int)$parts[1] : 0;
+
+            if ((time() - $storedTime) < $window) {
+                if ($storedCount >= $maxHits) {
+                    return "BACOT, sabar dulu. Coba lagi semenit kemudian.";
+                }
+                file_put_contents($spamFile, $storedTime . "+" . ($storedCount + 1));
+            } else {
+                file_put_contents($spamFile, time() . "+1");
+            }
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            // jika file tidak bisa dibaca/ditulis, lanjut saja
         }
+
         try {
             $ids = [18, 20, 43];
             $client = new \GuzzleHttp\Client();
