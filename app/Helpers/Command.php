@@ -1451,6 +1451,7 @@ class Command
                 ]
             ];
 
+            $startTime = microtime(true);
             $allItems = [];
             foreach ($ids as $id) {
                 $url = "https://jkohrhjvqzdhopqrnzpe.supabase.co/rest/v1/auctions?select=*&id=eq." . $id;
@@ -1460,6 +1461,7 @@ class Command
                     $allItems[] = $data[0];
                 }
             }
+            $elapsed = round((microtime(true) - $startTime) * 1000);
 
             if (empty($allItems)) {
                 return "⚠️ Data lelang tidak ditemukan.";
@@ -1478,7 +1480,8 @@ class Command
                 $msg .= "🏷️ <b>Status</b>    : " . $statusLabel . "\n";
                 $msg .= "⏰ <b>Berakhir</b>  : " . $endTime . "\n";
             }
-            $msg .= "━━━━━━━━━━━━━━━━━━━━━";
+            $msg .= "━━━━━━━━━━━━━━━━━━━━━\n";
+            $msg .= "⚡ <i>Data diperoleh dalam " . $elapsed . " ms</i>";
 
             return $msg;
         } catch (\Exception $e) {
