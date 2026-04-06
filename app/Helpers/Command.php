@@ -109,6 +109,9 @@ class Command
             case "30" : 
                 return self::mauCekHargaBBM();
                 break;
+            case "31" : 
+                return self::mauCekLelang();
+                break;
             default :
                 "nothing";
             }
@@ -239,6 +242,10 @@ class Command
             ],
             '/mauCekHargaBBM' => [
                 'deskripsi' => 'Cek harga BBM Pertamina terbaru',
+                'type' => 'text'
+            ],
+            '/mauCekLelang' => [
+                'deskripsi' => 'Cek info lelang aktif',
                 'type' => 'text'
             ],
         ];
@@ -1401,6 +1408,54 @@ class Command
             return $msg;
         } catch (\Exception $e) {
             return "❌ Error: " . $e->getMessage();
+        }
+    }
+    public static function mauCekLelang()
+    {
+        try {
+            $ids = [18, 20];
+            $client = new \GuzzleHttp\Client();
+            $headers = [
+                'verify' => false,
+                'headers' => [
+                    'apikey'        => env('SUPABASE_KEY'),
+                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY'),
+                    'Content-Type'  => 'application/json',
+                ]
+            ];
+
+            $allItems = [];
+            foreach ($ids as $id) {
+                $url = "https://jkohrhjvqzdhopqrnzpe.supabase.co/rest/v1/auctions?select=*&id=eq." . $id;
+                $response = $client->request('GET', $url, $headers);
+                $data = json_decode($response->getBody()->getContents(), true);
+                if (!empty($data)) {
+                    $allItems[] = $data[0];
+                }
+            }
+
+            if (empty($allItems)) {
+                return "⚠️ Data lelang tidak ditemukan.";
+            }
+
+            $msg = "🔨 <b>Info Lelang</b>\n";
+            foreach ($allItems as $item) {
+                $endTime = Carbon::parse($item['end_time'])->setTimezone('Asia/Jakarta')->format('d M Y H:i') . ' WIB';
+                $statusLabel = strtoupper($item['status']);
+
+                $msg .= "━━━━━━━━━━━━━━━━━━━━━\n";
+                $msg .= "📦 <b>Nama</b>      : " . $item['name'] . "\n";
+                $msg .= "💰 <b>Harga Awal</b>: Rp " . Util::format_number($item['start_price']) . "\n";
+                $msg .= "📈 <b>Bid Terakhir</b>: Rp " . Util::format_number($item['current_bid']) . "\n";
+                $msg .= "👑 <b>Leader</b>    : " . $item['current_leader'] . "\n";
+                $msg .= "🏷️ <b>Status</b>    : " . $statusLabel . "\n";
+                $msg .= "⏰ <b>Berakhir</b>  : " . $endTime . "\n";
+            }
+            $msg .= "━━━━━━━━━━━━━━━━━━━━━";
+
+            return $msg;
+        } catch (\Exception $e) {
+            return "❌ Error mengambil data lelang: " . $e->getMessage();
         }
     }
 }
