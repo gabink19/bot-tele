@@ -110,7 +110,7 @@ class Command
                 return self::mauCekHargaBBM();
                 break;
             case "31" : 
-                // return self::mauCekLelang();
+                return self::mauCekLelang();
                 break;
             default :
                 "nothing";
@@ -1412,6 +1412,33 @@ class Command
     }
     public static function mauCekLelang()
     {
+        try {
+            $now    = date('Hi');
+            $limit  = $now."+10";
+            $fh_res = fopen("count.txt", 'r') or die("Unable to open file!");
+            $read   = fread($fh_res,filesize("count.txt"));
+            if ($read==$limit) {
+                return "BACOT";
+            }else{
+                if ($read=='') {
+                    $limit = $now."+1";
+                }else{
+                    $parse = explode("+", $read);
+                    if ($now != $parse[0]) {
+                        $limit = $now."+1";
+                    }else{
+                        $count  = (int)$parse[1]+1;
+                        $limit = $now."+".$count;
+                    }
+                }
+            }
+
+            $fh = fopen("count.txt", "w") or die("Unable to open file!");;
+            fwrite($fh, $limit);
+            fclose($fh);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
         try {
             $ids = [18, 20, 43];
             $client = new \GuzzleHttp\Client();
