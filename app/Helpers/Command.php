@@ -1414,7 +1414,7 @@ class Command
     {
         // Anti-spam: max 10 hits per 60 seconds
         $spamFile = "countLelang.txt";
-        $maxHits  = 10;
+        $maxHits  = 3;
         $window   = 60; // seconds
 
         try {
