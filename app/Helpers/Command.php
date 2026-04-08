@@ -1440,7 +1440,7 @@ class Command
         }
 
         try {
-            $ids = [18, 20, 43];
+            $ids = [8, 12, 18, 20, 43];
             $client = new \GuzzleHttp\Client();
             $headers = [
                 'verify' => false,

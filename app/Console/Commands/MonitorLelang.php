@@ -12,7 +12,7 @@ class MonitorLelang extends Command
 
     protected $description = 'Monitor perubahan bid dan leader pada lelang aktif.';
 
-    private $auctionIds = [18, 20, 43];
+    private $auctionIds = [8, 12, 18, 20, 43];
 
     private $stateFile = 'lelang_state.json';
 
