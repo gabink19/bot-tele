@@ -1349,22 +1349,22 @@ class Command
    public static function mauCekHargaBBM()
     {
         try {
-            $apiUrl       = 'https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=en';
+            $apiUrl         = 'https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=en';
             $provinsiTarget = 'Prov. DKI Jakarta';
-            $cacheFile    = storage_path('app/cache/bbm_harga.json');
-            $cacheDuration = 100; // 1 jam dalam detik
+            $cacheFile      = storage_path('app/cache/bbm_harga.json');
+            $cacheDuration  = 3600; // 1 jam dalam detik
 
             // Mapping URL gambar produk ke nama BBM
             $productMap = [
                 'product-table-pertalite'            => 'Pertalite',
                 'product-table-pertamax.png'         => 'Pertamax',
-                'harga-produk-pertamax-pertashop'    => 'Pertamax (Pertashop)',
+                'harga-produk-pertamax-pertashop'    => 'Pertamax Pertashop',
                 'product-table-pertamax-turbo'       => 'Pertamax Turbo',
                 'product-table-pertamax-green-95'    => 'Pertamax Green 95',
                 'product-table-pertamina-dex'        => 'Pertamina Dex',
                 'product-table-dexlite'              => 'Dexlite',
-                'harga-produk-bio-solar-non-subsidi' => 'Bio Solar (Non-Subsidi)',
-                'harga-produk-bio-solar-subsidi'     => 'Bio Solar (Subsidi)',
+                'harga-produk-bio-solar-non-subsidi' => 'Bio Solar Non-Sub',
+                'harga-produk-bio-solar-subsidi'     => 'Bio Solar Subsidi',
             ];
 
             // Helper: resolve nama BBM dari URL gambar
@@ -1381,6 +1381,7 @@ class Command
             $fromCache  = false;
             $fetchedAt  = null;
             $response   = null;
+            $cached     = null;
 
             if (file_exists($cacheFile)) {
                 $cached = json_decode(file_get_contents($cacheFile), true);
@@ -1404,7 +1405,7 @@ class Command
                             'Accept: application/json',
                             'Referer: https://pertaminapatraniaga.com/',
                         ]),
-                        'timeout' => 50,
+                        'timeout' => 10,
                     ]
                 ]);
 
@@ -1412,7 +1413,7 @@ class Command
 
                 if (!$json) {
                     // Jika gagal fetch tapi ada cache lama, pakai cache lama
-                    if (isset($cached['payload'])) {
+                    if (!empty($cached['payload'])) {
                         $response  = $cached['payload'];
                         $fetchedAt = $cached['fetched_at'];
                         $fromCache = true;
@@ -1439,13 +1440,14 @@ class Command
                 }
             }
 
-            // --- Parse data ---
-            $periode = '-';
+            // --- Parse periode update dari heading ---
+            $periode     = '-';
             $headingNode = $response['data']['content']['I4g0NozOW4'] ?? null;
             if ($headingNode && isset($headingNode['props']['text'])) {
                 $periode = $headingNode['props']['text'];
             }
 
+            // --- Ambil items ProductTable ---
             $items = $response['data']['content']['l9RNzkhMqY']['props']['items'] ?? [];
 
             if (empty($items)) {
@@ -1454,22 +1456,19 @@ class Command
 
             // --- Bangun pesan ---
             $fetchedAtStr  = date('d M Y H:i', $fetchedAt);
-            $cacheStatus   = $fromCache
-                ? "♻️ <i>Dari cache – diambil: {$fetchedAtStr} WIB</i>"
-                : "🔄 <i>Data baru – diambil: {$fetchedAtStr} WIB</i>";
-
             $nextUpdateStr = date('d M Y H:i', $fetchedAt + $cacheDuration);
+            $cacheStatus   = $fromCache
+                ? "♻️ Dari cache – diambil: {$fetchedAtStr} WIB"
+                : "🔄 Data baru – diambil: {$fetchedAtStr} WIB";
 
             $msg  = "<b>⛽ Harga BBM Terbaru – {$provinsiTarget}</b>\n";
             $msg .= "<i>Sumber: pertaminapatraniaga.com</i>\n\n";
-            $msg .= "<pre>";
-            $msg .= str_pad("Jenis BBM", 22, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . "\n";
-            $msg .= str_repeat("─", 22) . "─┼─" . str_repeat("─", 12) . "\n";
 
             foreach ($items as $group) {
                 $groupTitle = $group['title'] ?? '';
                 $data       = $group['data'] ?? [];
 
+                // Cari baris DKI Jakarta
                 $rowJakarta = null;
                 foreach ($data as $row) {
                     $wilayah = $row['WILAYAH'] ?? $row['REGION'] ?? '';
@@ -1483,7 +1482,10 @@ class Command
                     continue;
                 }
 
-                $msg .= str_pad(" {$groupTitle} ", 36, "─", STR_PAD_BOTH) . "\n";
+                $msg .= "<b>[ {$groupTitle} ]</b>\n";
+                $msg .= "<code>";
+                $msg .= str_pad("Produk", 22) . str_pad("Harga", 14, " ", STR_PAD_LEFT) . "\n";
+                $msg .= str_repeat("-", 36) . "\n";
 
                 foreach ($rowJakarta as $key => $harga) {
                     if ($key === 'WILAYAH' || $key === 'REGION') {
@@ -1498,15 +1500,16 @@ class Command
                     $namaBBM        = $resolveNama($key);
                     $hargaFormatted = 'Rp ' . $hargaTrimmed;
 
-                    $msg .= str_pad($namaBBM, 22, " ", STR_PAD_RIGHT) . " │ " . str_pad($hargaFormatted, 12, " ", STR_PAD_LEFT) . "\n";
+                    $msg .= str_pad($namaBBM, 22) . str_pad($hargaFormatted, 14, " ", STR_PAD_LEFT) . "\n";
                 }
+
+                $msg .= "</code>\n";
             }
 
-            $msg .= "</pre>\n\n";
-            $msg .= "📅 <i>{$periode}</i>\n";
-            $msg .= "{$cacheStatus}\n";
-            $msg .= "⏳ <i>Update berikutnya: {$nextUpdateStr} WIB</i>\n";
-            $msg .= "<b>Catatan:</b> Harga resmi Pertamina untuk wilayah {$provinsiTarget}.";
+            $msg .= "\n📅 <i>{$periode}</i>\n";
+            $msg .= "<i>{$cacheStatus}</i>\n";
+            $msg .= "<i>⏳ Update berikutnya: {$nextUpdateStr} WIB</i>\n";
+            $msg .= "\n<b>Catatan:</b> Harga resmi Pertamina untuk wilayah {$provinsiTarget}.";
 
             return $msg;
 
