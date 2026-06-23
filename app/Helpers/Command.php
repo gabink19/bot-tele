@@ -1347,69 +1347,133 @@ class Command
         }
     } 
     public static function mauCekHargaBBM()
-    {
-        try {
-            $bbmList = [
-                'Pertalite' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=1&input=month&categorySlug=mobil',
-                'Pertamax' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=3&input=month&categorySlug=mobil',
-                'Pertamax Turbo' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=2&input=month&categorySlug=mobil',
-                'Dexlite' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=4&input=month&categorySlug=mobil',
-                'Pertamina Dex' => 'https://www.oto.com/ajax/get-fuel-price-trends?fuelId=5&input=month&categorySlug=mobil'
-            ];
+{
+    try {
+        $apiUrl = 'https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=en';
+        $provinsiTarget = 'Prov. DKI Jakarta';
 
-            // Mapping bulan bahasa Inggris ke Indonesia
-            $bulanMap = [
-                'Jan' => 'Jan', 'Feb' => 'Feb', 'Mar' => 'Mar',
-                'Apr' => 'Apr', 'May' => 'Mei', 'Jun' => 'Jun',
-                'Jul' => 'Jul', 'Aug' => 'Agu', 'Sep' => 'Sep',
-                'Oct' => 'Okt', 'Nov' => 'Nov', 'Dec' => 'Des'
-            ];
+        // Mapping URL gambar produk ke nama BBM
+        $productMap = [
+            // Gasoline
+            'product-table-pertalite'          => 'Pertalite',
+            'product-table-pertamax.png'       => 'Pertamax',
+            'harga-produk-pertamax-pertashop'  => 'Pertamax (Pertashop)',
+            'product-table-pertamax-turbo'     => 'Pertamax Turbo',
+            'product-table-pertamax-green-95'  => 'Pertamax Green 95',
+            // Gasoil
+            'product-table-pertamina-dex'      => 'Pertamina Dex',
+            'product-table-dexlite'            => 'Dexlite',
+            'harga-produk-bio-solar-non-subsidi' => 'Bio Solar (Non-Subsidi)',
+            'harga-produk-bio-solar-subsidi'   => 'Bio Solar (Subsidi)',
+        ];
 
-            $msg = "<b>⛽ Harga BBM Terbaru (Rata-rata Nasional)</b>\n";
-            $msg .= "<i>Sumber: oto.com</i>\n\n";
-            $msg .= "<pre>";
-            $msg .= str_pad("Jenis BBM", 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . " │ " . str_pad("Last Update", 12, " ", STR_PAD_LEFT) . "\n";
-            $msg .= str_repeat("─", 16) . "─┼─" . str_repeat("─", 12) . "─┼─" . str_repeat("─", 15) . "\n";
+        $context = stream_context_create([
+            'http' => [
+                'method'  => 'GET',
+                'header'  => implode("\r\n", [
+                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept: application/json',
+                    'Referer: https://pertaminapatraniaga.com/',
+                ]),
+                'timeout' => 10,
+            ]
+        ]);
 
-            foreach ($bbmList as $nama => $url) {
-                $json = @file_get_contents($url);
-                if ($json) {
-                    $data = json_decode($json, true);
-                    if ($data && is_array($data) && count($data) > 0) {
-                        // Ambil data terakhir
-                        $lastData = end($data);
-                        $harga = $lastData['displayPrice'];
-                        $bulanText = $lastData['text']; // Contoh: "Feb 26"
-                        
-                        // Parse dan format ulang bulan
-                        $parts = explode(' ', $bulanText);
-                        if (count($parts) == 2) {
-                            $bulanEng = $parts[0];
-                            $tahun = '20' . $parts[1]; // "26" menjadi "2026"
-                            $bulanInd = isset($bulanMap[$bulanEng]) ? $bulanMap[$bulanEng] : $bulanEng;
-                            $updateText = $bulanInd . ' ' . $tahun;
-                        } else {
-                            $updateText = $bulanText;
-                        }
-                        
-                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad($harga, 13, " ", STR_PAD_LEFT) . " │ " . str_pad($updateText, 10, " ", STR_PAD_LEFT) . "\n";
-                    } else {
-                        $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("N/A", 13, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 15, " ", STR_PAD_LEFT) . "\n";
-                    }
-                } else {
-                    $msg .= str_pad($nama, 16, " ", STR_PAD_RIGHT) . " │ " . str_pad("Error", 13, " ", STR_PAD_LEFT) . " │ " . str_pad("-", 15, " ", STR_PAD_LEFT) . "\n";
+        $json = @file_get_contents($apiUrl, false, $context);
+
+        if (!$json) {
+            return "❌ Gagal mengambil data dari API Pertamina Patrianiaga.";
+        }
+
+        $response = json_decode($json, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || empty($response['data'])) {
+            return "❌ Response API tidak valid.";
+        }
+
+        // Ambil tanggal update dari heading
+        $periode = '-';
+        $headingNode = $response['data']['content']['I4g0NozOW4'] ?? null;
+        if ($headingNode && isset($headingNode['props']['text'])) {
+            $periode = $headingNode['props']['text']; // "Update per tanggal 10 Juni 2026"
+        }
+
+        // Ambil items dari ProductTable node
+        $items = $response['data']['content']['l9RNzkhMqY']['props']['items'] ?? [];
+
+        if (empty($items)) {
+            return "❌ Data produk tidak ditemukan dalam response API.";
+        }
+
+        // Helper: resolve nama BBM dari URL gambar
+        $resolveNama = function (string $urlKey) use ($productMap): string {
+            foreach ($productMap as $keyword => $nama) {
+                if (str_contains($urlKey, $keyword)) {
+                    return $nama;
+                }
+            }
+            // Fallback: ambil nama file saja
+            return basename($urlKey, '.png');
+        };
+
+        // Bangun pesan
+        $msg  = "<b>⛽ Harga BBM Terbaru – {$provinsiTarget}</b>\n";
+        $msg .= "<i>Sumber: pertaminapatraniaga.com</i>\n\n";
+        $msg .= "<pre>";
+        $msg .= str_pad("Jenis BBM", 22, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . "\n";
+        $msg .= str_repeat("─", 22) . "─┼─" . str_repeat("─", 12) . "\n";
+
+        foreach ($items as $group) {
+            $groupTitle = $group['title'] ?? ''; // "Gasoline" atau "Gasoil"
+            $data       = $group['data'] ?? [];
+
+            // Cari baris DKI Jakarta
+            $rowJakarta = null;
+            foreach ($data as $row) {
+                $wilayah = $row['WILAYAH'] ?? $row['REGION'] ?? '';
+                if (stripos($wilayah, 'DKI Jakarta') !== false) {
+                    $rowJakarta = $row;
+                    break;
                 }
             }
 
-            $msg .= "</pre>\n";
-            $msg .= "\n📅 <i>Data update: " . date('d M Y H:i') . " WIB</i>\n";
-            $msg .= "<b>Catatan:</b> Harga dapat berbeda di setiap daerah.";
+            if (!$rowJakarta) {
+                continue;
+            }
 
-            return $msg;
-        } catch (\Exception $e) {
-            return "❌ Error: " . $e->getMessage();
+            // Separator per grup
+            $msg .= str_pad("── {$groupTitle} ──", 36, "─") . "\n";
+
+            foreach ($rowJakarta as $key => $harga) {
+                if ($key === 'WILAYAH' || $key === 'REGION') {
+                    continue;
+                }
+
+                $namaBBM     = $resolveNama($key);
+                $hargaTrimmed = trim($harga);
+
+                // Skip produk yang tidak tersedia
+                if ($hargaTrimmed === '-' || $hargaTrimmed === '') {
+                    continue;
+                }
+
+                $hargaFormatted = 'Rp ' . $hargaTrimmed;
+
+                $msg .= str_pad($namaBBM, 22, " ", STR_PAD_RIGHT) . " │ " . str_pad($hargaFormatted, 12, " ", STR_PAD_LEFT) . "\n";
+            }
         }
+
+        $msg .= "</pre>\n";
+        $msg .= "\n📅 <i>{$periode}</i>\n";
+        $msg .= "🕐 <i>Dicek pada: " . date('d M Y H:i') . " WIB</i>\n";
+        $msg .= "<b>Catatan:</b> Harga resmi Pertamina untuk wilayah {$provinsiTarget}.";
+
+        return $msg;
+
+    } catch (\Exception $e) {
+        return "❌ Error: " . $e->getMessage();
     }
+}
     public static function mauCekLelang()
     {
         // Anti-spam: max 10 hits per 60 seconds

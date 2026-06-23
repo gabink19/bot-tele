@@ -227,7 +227,7 @@ class TelegramController extends Controller
 
     public function test()
     {
-        echo Command::mauCekLelang();
+        echo Command::mauCekHargaBBM();
     }
     public function testgaji()
     {
