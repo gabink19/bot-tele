@@ -233,5 +233,9 @@ class TelegramController extends Controller
     {
        echo Command::mauThr();
     }
+    public function cekHargaBBM()
+    {
+        echo Command::mauCekHargaBBM();
+    }
 }
 
