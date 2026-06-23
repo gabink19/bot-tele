@@ -1346,134 +1346,174 @@ class Command
             return "❌ Error mengambil kurs: " . $e->getMessage();
         }
     } 
-    public static function mauCekHargaBBM()
-{
-    try {
-        $apiUrl = 'https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=en';
-        $provinsiTarget = 'Prov. DKI Jakarta';
+   public static function mauCekHargaBBM()
+    {
+        try {
+            $apiUrl       = 'https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=en';
+            $provinsiTarget = 'Prov. DKI Jakarta';
+            $cacheFile    = storage_path('app/cache/bbm_harga.json');
+            $cacheDuration = 100; // 1 jam dalam detik
 
-        // Mapping URL gambar produk ke nama BBM
-        $productMap = [
-            // Gasoline
-            'product-table-pertalite'          => 'Pertalite',
-            'product-table-pertamax.png'       => 'Pertamax',
-            'harga-produk-pertamax-pertashop'  => 'Pertamax (Pertashop)',
-            'product-table-pertamax-turbo'     => 'Pertamax Turbo',
-            'product-table-pertamax-green-95'  => 'Pertamax Green 95',
-            // Gasoil
-            'product-table-pertamina-dex'      => 'Pertamina Dex',
-            'product-table-dexlite'            => 'Dexlite',
-            'harga-produk-bio-solar-non-subsidi' => 'Bio Solar (Non-Subsidi)',
-            'harga-produk-bio-solar-subsidi'   => 'Bio Solar (Subsidi)',
-        ];
+            // Mapping URL gambar produk ke nama BBM
+            $productMap = [
+                'product-table-pertalite'            => 'Pertalite',
+                'product-table-pertamax.png'         => 'Pertamax',
+                'harga-produk-pertamax-pertashop'    => 'Pertamax (Pertashop)',
+                'product-table-pertamax-turbo'       => 'Pertamax Turbo',
+                'product-table-pertamax-green-95'    => 'Pertamax Green 95',
+                'product-table-pertamina-dex'        => 'Pertamina Dex',
+                'product-table-dexlite'              => 'Dexlite',
+                'harga-produk-bio-solar-non-subsidi' => 'Bio Solar (Non-Subsidi)',
+                'harga-produk-bio-solar-subsidi'     => 'Bio Solar (Subsidi)',
+            ];
 
-        $context = stream_context_create([
-            'http' => [
-                'method'  => 'GET',
-                'header'  => implode("\r\n", [
-                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Accept: application/json',
-                    'Referer: https://pertaminapatraniaga.com/',
-                ]),
-                'timeout' => 10,
-            ]
-        ]);
-
-        $json = @file_get_contents($apiUrl, false, $context);
-
-        if (!$json) {
-            return "❌ Gagal mengambil data dari API Pertamina Patrianiaga.";
-        }
-
-        $response = json_decode($json, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE || empty($response['data'])) {
-            return "❌ Response API tidak valid.";
-        }
-
-        // Ambil tanggal update dari heading
-        $periode = '-';
-        $headingNode = $response['data']['content']['I4g0NozOW4'] ?? null;
-        if ($headingNode && isset($headingNode['props']['text'])) {
-            $periode = $headingNode['props']['text']; // "Update per tanggal 10 Juni 2026"
-        }
-
-        // Ambil items dari ProductTable node
-        $items = $response['data']['content']['l9RNzkhMqY']['props']['items'] ?? [];
-
-        if (empty($items)) {
-            return "❌ Data produk tidak ditemukan dalam response API.";
-        }
-
-        // Helper: resolve nama BBM dari URL gambar
-        $resolveNama = function (string $urlKey) use ($productMap): string {
-            foreach ($productMap as $keyword => $nama) {
-                if (str_contains($urlKey, $keyword)) {
-                    return $nama;
+            // Helper: resolve nama BBM dari URL gambar
+            $resolveNama = function (string $urlKey) use ($productMap): string {
+                foreach ($productMap as $keyword => $nama) {
+                    if (str_contains($urlKey, $keyword)) {
+                        return $nama;
+                    }
                 }
-            }
-            // Fallback: ambil nama file saja
-            return basename($urlKey, '.png');
-        };
+                return basename($urlKey, '.png');
+            };
 
-        // Bangun pesan
-        $msg  = "<b>⛽ Harga BBM Terbaru – {$provinsiTarget}</b>\n";
-        $msg .= "<i>Sumber: pertaminapatraniaga.com</i>\n\n";
-        $msg .= "<pre>";
-        $msg .= str_pad("Jenis BBM", 22, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . "\n";
-        $msg .= str_repeat("─", 22) . "─┼─" . str_repeat("─", 12) . "\n";
+            // --- Cek cache ---
+            $fromCache  = false;
+            $fetchedAt  = null;
+            $response   = null;
 
-        foreach ($items as $group) {
-            $groupTitle = $group['title'] ?? ''; // "Gasoline" atau "Gasoil"
-            $data       = $group['data'] ?? [];
-
-            // Cari baris DKI Jakarta
-            $rowJakarta = null;
-            foreach ($data as $row) {
-                $wilayah = $row['WILAYAH'] ?? $row['REGION'] ?? '';
-                if (stripos($wilayah, 'DKI Jakarta') !== false) {
-                    $rowJakarta = $row;
-                    break;
+            if (file_exists($cacheFile)) {
+                $cached = json_decode(file_get_contents($cacheFile), true);
+                if (
+                    isset($cached['fetched_at'], $cached['payload']) &&
+                    (time() - $cached['fetched_at']) < $cacheDuration
+                ) {
+                    $response  = $cached['payload'];
+                    $fetchedAt = $cached['fetched_at'];
+                    $fromCache = true;
                 }
             }
 
-            if (!$rowJakarta) {
-                continue;
+            // --- Ambil data baru jika cache expired atau tidak ada ---
+            if (!$fromCache) {
+                $context = stream_context_create([
+                    'http' => [
+                        'method'  => 'GET',
+                        'header'  => implode("\r\n", [
+                            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                            'Accept: application/json',
+                            'Referer: https://pertaminapatraniaga.com/',
+                        ]),
+                        'timeout' => 50,
+                    ]
+                ]);
+
+                $json = @file_get_contents($apiUrl, false, $context);
+
+                if (!$json) {
+                    // Jika gagal fetch tapi ada cache lama, pakai cache lama
+                    if (isset($cached['payload'])) {
+                        $response  = $cached['payload'];
+                        $fetchedAt = $cached['fetched_at'];
+                        $fromCache = true;
+                    } else {
+                        return "❌ Gagal mengambil data dari API Pertamina Patrianiaga.";
+                    }
+                } else {
+                    $response = json_decode($json, true);
+
+                    if (json_last_error() !== JSON_ERROR_NONE || empty($response['data'])) {
+                        return "❌ Response API tidak valid.";
+                    }
+
+                    // Simpan ke cache
+                    $fetchedAt = time();
+                    $cacheDir  = dirname($cacheFile);
+                    if (!is_dir($cacheDir)) {
+                        mkdir($cacheDir, 0755, true);
+                    }
+                    file_put_contents($cacheFile, json_encode([
+                        'fetched_at' => $fetchedAt,
+                        'payload'    => $response,
+                    ]));
+                }
             }
 
-            // Separator per grup
-            $msg .= str_pad("── {$groupTitle} ──", 36, "─") . "\n";
+            // --- Parse data ---
+            $periode = '-';
+            $headingNode = $response['data']['content']['I4g0NozOW4'] ?? null;
+            if ($headingNode && isset($headingNode['props']['text'])) {
+                $periode = $headingNode['props']['text'];
+            }
 
-            foreach ($rowJakarta as $key => $harga) {
-                if ($key === 'WILAYAH' || $key === 'REGION') {
+            $items = $response['data']['content']['l9RNzkhMqY']['props']['items'] ?? [];
+
+            if (empty($items)) {
+                return "❌ Data produk tidak ditemukan dalam response API.";
+            }
+
+            // --- Bangun pesan ---
+            $fetchedAtStr  = date('d M Y H:i', $fetchedAt);
+            $cacheStatus   = $fromCache
+                ? "♻️ <i>Dari cache – diambil: {$fetchedAtStr} WIB</i>"
+                : "🔄 <i>Data baru – diambil: {$fetchedAtStr} WIB</i>";
+
+            $nextUpdateStr = date('d M Y H:i', $fetchedAt + $cacheDuration);
+
+            $msg  = "<b>⛽ Harga BBM Terbaru – {$provinsiTarget}</b>\n";
+            $msg .= "<i>Sumber: pertaminapatraniaga.com</i>\n\n";
+            $msg .= "<pre>";
+            $msg .= str_pad("Jenis BBM", 22, " ", STR_PAD_RIGHT) . " │ " . str_pad("Harga/Liter", 12, " ", STR_PAD_LEFT) . "\n";
+            $msg .= str_repeat("─", 22) . "─┼─" . str_repeat("─", 12) . "\n";
+
+            foreach ($items as $group) {
+                $groupTitle = $group['title'] ?? '';
+                $data       = $group['data'] ?? [];
+
+                $rowJakarta = null;
+                foreach ($data as $row) {
+                    $wilayah = $row['WILAYAH'] ?? $row['REGION'] ?? '';
+                    if (stripos($wilayah, 'DKI Jakarta') !== false) {
+                        $rowJakarta = $row;
+                        break;
+                    }
+                }
+
+                if (!$rowJakarta) {
                     continue;
                 }
 
-                $namaBBM     = $resolveNama($key);
-                $hargaTrimmed = trim($harga);
+                $msg .= str_pad(" {$groupTitle} ", 36, "─", STR_PAD_BOTH) . "\n";
 
-                // Skip produk yang tidak tersedia
-                if ($hargaTrimmed === '-' || $hargaTrimmed === '') {
-                    continue;
+                foreach ($rowJakarta as $key => $harga) {
+                    if ($key === 'WILAYAH' || $key === 'REGION') {
+                        continue;
+                    }
+
+                    $hargaTrimmed = trim($harga);
+                    if ($hargaTrimmed === '-' || $hargaTrimmed === '') {
+                        continue;
+                    }
+
+                    $namaBBM        = $resolveNama($key);
+                    $hargaFormatted = 'Rp ' . $hargaTrimmed;
+
+                    $msg .= str_pad($namaBBM, 22, " ", STR_PAD_RIGHT) . " │ " . str_pad($hargaFormatted, 12, " ", STR_PAD_LEFT) . "\n";
                 }
-
-                $hargaFormatted = 'Rp ' . $hargaTrimmed;
-
-                $msg .= str_pad($namaBBM, 22, " ", STR_PAD_RIGHT) . " │ " . str_pad($hargaFormatted, 12, " ", STR_PAD_LEFT) . "\n";
             }
+
+            $msg .= "</pre>\n\n";
+            $msg .= "📅 <i>{$periode}</i>\n";
+            $msg .= "{$cacheStatus}\n";
+            $msg .= "⏳ <i>Update berikutnya: {$nextUpdateStr} WIB</i>\n";
+            $msg .= "<b>Catatan:</b> Harga resmi Pertamina untuk wilayah {$provinsiTarget}.";
+
+            return $msg;
+
+        } catch (\Exception $e) {
+            return "❌ Error: " . $e->getMessage();
         }
-
-        $msg .= "</pre>\n";
-        $msg .= "\n📅 <i>{$periode}</i>\n";
-        $msg .= "🕐 <i>Dicek pada: " . date('d M Y H:i') . " WIB</i>\n";
-        $msg .= "<b>Catatan:</b> Harga resmi Pertamina untuk wilayah {$provinsiTarget}.";
-
-        return $msg;
-
-    } catch (\Exception $e) {
-        return "❌ Error: " . $e->getMessage();
     }
-}
     public static function mauCekLelang()
     {
         // Anti-spam: max 10 hits per 60 seconds
