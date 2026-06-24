@@ -1,100 +1,159 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smartpage</title>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meidiyan Smart TV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 35%),
+                  radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.18), transparent 30%),
+                  linear-gradient(180deg, #060b16 0%, #0b1224 100%);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(16px);
+    }
+    .focus-ring:focus {
+      outline: 3px solid rgba(56, 189, 248, 0.9);
+      outline-offset: 4px;
+    }
+    .logo-pill {
+      border-radius: 9999px;
+      padding: 0.5rem 0.9rem;
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+    }
+    .card-logo {
+      height: 100px;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.05);
+    }
+  </style>
 </head>
-<style>
-  .w-full{
-    margin-top: 10px;
-  }
-  .w-fullx{
-    height: 90px;
-  }
-</style>
-<body>
-<!-- partial:index.partial.html -->
-<body class="bg-gray-100 font-sans text-gray-800 antialiased leading-none tracking-wide">
+<body class="font-sans text-white">
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <header class="mb-10 rounded-[2.5rem] border border-white/10 bg-slate-950/80 p-8 glass-card shadow-2xl shadow-slate-950/30">
+      <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div class="space-y-5">
+          <div class="inline-flex items-center gap-3 rounded-3xl bg-slate-900/70 px-4 py-3 text-sky-300 shadow-inner shadow-slate-950/20">
+            <span class="text-2xl">📺</span>
+            <div>
+              <p class="text-xs uppercase tracking-[0.35em] text-sky-300/80">Smart TV Homepage</p>
+              <p class="text-sm text-slate-300">Tampilan khusus layar besar</p>
+            </div>
+          </div>
+          <div>
+            <h1 class="text-5xl font-bold tracking-tight text-white sm:text-6xl">Meidiyan Smart Page</h1>
+            <p class="mt-4 max-w-3xl text-lg leading-8 text-slate-300">Homepage nyaman untuk Smart TV. Pilih situs streaming favorit dengan kartu besar, navigasi remote, dan link yang mudah dibuka.</p>
+          </div>
+        </div>
 
-  <!-- Hero Section -->
-  <section class="bg-white py-24 sm:py-32">
-    <div class="container mx-auto px-4">
-      <h1 class="text-center text-4xl font-semibold mb-4">Welcome To Meidiyan Smart Page</h1>
-      <p class="text-center text-lg mb-8">Silahkan pilih web streaming film dibawah.</p>
-      <div class="flex flex-wrap justify-center -mx-2 lg:-mx-4">
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://ok.ru/video/3848758692488">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://member.doranobi-fansub.id/wp-content/uploads/2021/04/DNFI.jpg" alt="Rebahin" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">DORAEMON</h2>
-              <p class="text-gray-600">https://member.doranobi-fansub.id/doraemon/</p>
-            </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+            <p class="text-sm uppercase tracking-[0.35em] text-sky-300">Link aktif</p>
+            <p class="mt-3 text-3xl font-semibold text-white">9+ Pilihan</p>
+            <p class="mt-2 text-sm text-slate-400">Semua tautan siap dibuka di browser TV.</p>
           </div>
-          </a>
-        </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://filmseries21.my.id/">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://tv4.fs21.shop/wp-content/uploads/2022/12/FilmSeries21New.png" alt="FILM SERIES 21" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">FILM SERIES 21</h2>
-              <p class="text-gray-600">https://filmseries21.my.id/</p>
-            </div>
+          <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+            <p class="text-sm uppercase tracking-[0.35em] text-sky-300">Kontrol mudah</p>
+            <p class="mt-3 text-3xl font-semibold text-white">Remote friendly</p>
+            <p class="mt-2 text-sm text-slate-400">Fokus besar dan teks jelas untuk navigasi.</p>
           </div>
-          </a>
-        </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://amp.lk21official.mom/">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden" >
-            <img src="https://cdn.jsdelivr.net/gh/layarkaca21/lk21/images/logo-layarkaca21.svg" style="background-color: blue;min-height: 85px;" alt="LK21" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">LAYARKACA 21</h2>
-              <p class="text-gray-600">https://amp.lk21official.mom/</p>
-            </div>
-          </div>
-          </a>
-        </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://unduhfilmhd.com/">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden" >
-            <img src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png" style="background-color: blue;height: 85px;" alt="UNDUHFILM" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">UNDUHFILM HD</h2>
-              <p class="text-gray-600">https://unduhfilmhd.com/</p>
-            </div>
-          </div>
-          </a>
-        </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://pahe.ink/">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden" >
-            <img src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png" style="background-color: blue;height: 85px;" alt="UNDUHFILM" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">PAHE</h2>
-              <p class="text-gray-600">https://pahe.ink/</p>
-            </div>
-          </div>
-          </a>
-        </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3 px-2 mb-6 lg:mb-0">
-          <a href="https://146.19.213.178/">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden" >
-            <img src="https://146.19.213.178/wp-content/uploads/2019/08/logo-720p.png" style="height: 85px;" alt="BIOSKOPKACA" class="w-full w-fullx">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">BIOSKOPKACA 21</h2>
-              <p class="text-gray-600">https://146.19.213.178/</p>
-            </div>
-          </div>
-          </a>
         </div>
       </div>
-    </div>
-  </section>
-</body>
-<!-- partial -->
-  
+    </header>
+
+    <main>
+      <section class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm uppercase tracking-[0.35em] text-sky-300">Pilihan utama</p>
+          <h2 class="mt-3 text-3xl font-semibold text-white">Web streaming terbaik untuk TV</h2>
+          <p class="mt-2 max-w-2xl text-sm text-slate-400">Tautan utama yang cocok untuk nonton film, serial, anime, dan siaran langsung di layar besar.</p>
+        </div>
+        <div class="rounded-3xl bg-slate-900/70 px-5 py-3 text-sm text-slate-300">Geser kanan/kiri lalu tekan enter</div>
+      </section>
+
+      <section class="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+
+        <a href="https://www.xbox.com/id-ID/play/consoles" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/XBOX_logo_2012.svg/960px-XBOX_logo_2012.svg.png" alt="Xbox" class="card-logo mx-auto h-full w-auto">
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">XBOX REMOTE PLAY</span>
+            <h3 class="text-2xl font-semibold text-white">Xbox Consoles</h3>
+            <p class="text-sm text-slate-400">Buka halaman Xbox dan akses Remote Play untuk TV dan konsol.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka Xbox</div>
+          </div>
+        </a>
+
+        <a href="https://streamex.net/" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <span class="text-5xl font-black tracking-tight text-sky-300">HD</span>
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">DOWNLOAD FILM</span>
+            <h3 class="text-2xl font-semibold text-white">StreamEx</h3>
+            <p class="text-sm text-slate-400">Akses cepat ke film populer dalam kualitas HD.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka StreamEx</div>
+          </div>
+        </a>
+
+        <a href="https://filmseries21.my.id/" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <img src="https://tv4.fs21.shop/wp-content/uploads/2022/12/FilmSeries21New.png" alt="Film Series 21" class="card-logo mx-auto h-full w-auto object-contain">
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">FILM GRATIS</span>
+            <h3 class="text-2xl font-semibold text-white">Film Series 21</h3>
+            <p class="text-sm text-slate-400">Tonton film gratis yang selalu diperbarui dengan mudah.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka FilmSeries</div>
+          </div>
+        </a>
+
+        <a href="https://amp.lk21official.mom/" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <img src="https://cdn.jsdelivr.net/gh/layarkaca21/lk21/images/logo-layarkaca21.svg" alt="LayarKaca21" class="card-logo mx-auto h-full w-auto object-contain">
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">KOLEKSI FILM</span>
+            <h3 class="text-2xl font-semibold text-white">LayarKaca21</h3>
+            <p class="text-sm text-slate-400">Mudah dipilih dan cocok untuk layar besar Smart TV.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka LayarKaca</div>
+          </div>
+        </a>
+
+        <a href="https://pahe.ink/" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <span class="text-5xl font-black tracking-tight text-sky-300">PAHE</span>
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">FILM TERBARU</span>
+            <h3 class="text-2xl font-semibold text-white">Pahe</h3>
+            <p class="text-sm text-slate-400">Situs film populer yang mudah dijangkau dengan remote.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka Pahe</div>
+          </div>
+        </a>
+
+        <a href="https://146.19.213.178/" target="_blank" rel="noopener noreferrer" class="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 transition duration-300 hover:-translate-y-1 hover:bg-slate-800 focus-ring focus:outline-none">
+          <div class="flex h-28 items-center justify-center rounded-3xl bg-slate-950/80">
+            <img src="https://146.19.213.178/wp-content/uploads/2019/08/logo-720p.png" alt="BioskopKaca 21" class="card-logo mx-auto h-full w-auto object-contain">
+          </div>
+          <div class="mt-6 space-y-4">
+            <span class="logo-pill">FILM ONLINE</span>
+            <h3 class="text-2xl font-semibold text-white">BioskopKaca 21</h3>
+            <p class="text-sm text-slate-400">Link film lengkap dengan tampilan yang mudah di TV.</p>
+            <div class="inline-flex items-center rounded-full bg-sky-400/10 px-4 py-2 text-sm text-sky-200">Buka BioskopKaca</div>
+          </div>
+        </a>
+
+      </section>
+    </main>
+  </div>
 </body>
 </html>
