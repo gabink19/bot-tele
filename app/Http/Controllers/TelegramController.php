@@ -180,7 +180,7 @@ class TelegramController extends Controller
                 $data['reply_to_message_id'] = $reply_to_message_id;
                 if($response == "Cek rekening BNI cuy") {
                     $data['caption'] = $response;
-                    $data['animation'] = public_path('tenor-2-1.gif');
+                    $data['animation'] = base_path('public/tenor-2-1.gif');
 
                     Util::sendAnimation($data,$chatId);
                 }
@@ -190,7 +190,7 @@ class TelegramController extends Controller
                     Util::sendPhoto($data,$chatId);
                 }else if($message == "/mauthr" && $today==$thr){
                     $data['caption'] = $response;
-                    $data['animation'] = public_path('tenor-2-1.gif');
+                    $data['animation'] = base_path('public/tenor-2-1.gif');
 
                     Util::sendAnimation($data,$chatId);
                 }else {
