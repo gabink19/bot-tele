@@ -112,6 +112,28 @@ class Util
 
     public static function sendAnimation($data,$chatId)
     {
+        // File lokal (mis. dari public/) diupload langsung via multipart
+        if (is_file($data['animation'])) {
+            $post = [
+                'chat_id' => $chatId,
+                'animation' => new \CURLFile($data['animation'], 'image/gif'),
+            ];
+            foreach (['caption', 'parse_mode', 'reply_to_message_id'] as $key) {
+                if (isset($data[$key]))
+                    $post[$key] = $data[$key];
+            }
+            $curl = curl_init("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendAnimation");
+            curl_setopt_array($curl, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $post,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 30,
+            ]);
+            curl_exec($curl);
+            curl_close($curl);
+            return;
+        }
+
         $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendAnimation"
             . "?chat_id=" . $chatId
             . "&animation=" . urlencode($data['animation']);
